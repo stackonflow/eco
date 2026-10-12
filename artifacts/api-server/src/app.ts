@@ -52,7 +52,7 @@ app.use("/api/auth", authLimiter);
 app.use("/api", router);
 
 const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
-  const statusCode =
+  const declaredStatus =
     typeof error === "object" &&
     error !== null &&
     "status" in error &&
@@ -61,12 +61,44 @@ const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
     error.status < 500
       ? error.status
       : 500;
+  const isMongooseValidation =
+    typeof error === "object" &&
+    error !== null &&
+    "name" in error &&
+    error.name === "ValidationError";
+  const isMongooseCast =
+    typeof error === "object" &&
+    error !== null &&
+    "name" in error &&
+    error.name === "CastError";
+  const isDuplicateKey =
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    error.code === 11000;
+  const statusCode = isDuplicateKey
+    ? 409
+    : isMongooseValidation || isMongooseCast
+      ? 400
+      : declaredStatus;
 
   if (statusCode >= 500) {
     logger.error({ err: error }, "Unhandled API error");
   }
+  const message =
+    statusCode < 500 &&
+    typeof error === "object" &&
+    error !== null &&
+    "message" in error &&
+    typeof error.message === "string"
+      ? error.message
+      : statusCode === 409
+        ? "This record conflicts with an existing record."
+        : statusCode === 400
+          ? "The request is invalid."
+          : "Internal server error.";
   res.status(statusCode).json({
-    error: statusCode === 500 ? "Internal server error." : "Invalid request.",
+    error: message,
   });
 };
 

@@ -1,0 +1,43 @@
+Fix the current EcoCycle project from its existing state. Do not rebuild it from scratch.
+
+The preview is loading, but the UI has visible issues and the agent reported an error.
+
+### 1. Fix the visual problems first
+- Fix the hero headline contrast. "Turn Your Waste" is currently white on a light background and is nearly invisible.
+- Use dark forest green or charcoal for the main headline, with emerald as a restrained accent for "Into Wealth."
+- Darken the supporting paragraph text so it is comfortably readable.
+- Improve the hero's proportions and vertical spacing.
+- Reduce the oversized headline if necessary so it has balanced line lengths.
+- Keep the recycling illustration, but ensure it complements rather than overwhelms the hero text.
+- Improve the visibility of the small eyebrow label and platform status text.
+- Maintain consistent contrast across navbar links, buttons, badges, and section headings.
+- Preserve the professional forest-green and warm-neutral design direction. Do not revert to a generic neon/glassmorphism design.
+
+### 2. Diagnose the agent error
+The previous run reported "Agent ran into an error" after attempting to restore dependencies.
+
+Inspect the actual terminal logs and determine whether:
+- The frontend starts successfully.
+- The backend starts successfully.
+- The workspace dependencies are installed correctly.
+- The MongoDB connection and API health check work.
+
+Fix the underlying issue. Do not assume that the visible landing page proves the backend is working.
+
+### 3. Preserve existing functionality
+- Keep the imported project and its current architecture.
+- Do not delete or recreate lockfiles unnecessarily.
+- Preserve the existing React/Vite frontend, Express/Mongoose backend, authentication, and API contracts.
+- Do not remove features or replace real database operations with mock data.
+
+### 4. Continue development carefully
+First fix the visual contrast and confirm that the application starts. Then inspect the current Phase 2 implementation for waste submissions and rate management. Complete any missing parts only after identifying what already exists.
+
+Test the actual application and report:
+1. The cause of the agent error.
+2. Files changed.
+3. Whether the frontend and backend start.
+4. Whether MongoDB and authentication work.
+5. Whether Phase 2 is implemented and tested.
+
+Do not claim success without verification.

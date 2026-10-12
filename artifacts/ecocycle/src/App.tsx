@@ -8,6 +8,9 @@ import Home from '@/pages/Home';
 import Register from '@/pages/Register';
 import Login from '@/pages/Login';
 import Account from '@/pages/Account';
+import SubmitWaste from '@/pages/SubmitWaste';
+import MyRequests from '@/pages/MyRequests';
+import Admin from '@/pages/Admin';
 import {
   Route,
   Switch,
@@ -34,6 +37,9 @@ function Router() {
         <Route path="/register" component={Register} />
         <Route path="/login" component={Login} />
         <Route path="/account" component={Account} />
+        <Route path="/submit-waste" component={SubmitWaste} />
+        <Route path="/my-requests" component={MyRequests} />
+        <Route path="/admin" component={Admin} />
         <Route component={NotFound} />
       </Switch>
     </RoutedErrorBoundary>

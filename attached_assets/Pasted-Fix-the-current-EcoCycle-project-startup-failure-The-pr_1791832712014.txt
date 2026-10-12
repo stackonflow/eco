@@ -1,0 +1,34 @@
+Fix the current EcoCycle project startup failure. The preview shows:
+
+`sh: 1: vite: not found`
+`ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL`
+`spawn ENOENT`
+`node_modules missing, did you mean to install?`
+
+The project was imported from another Replit account, and the dependency installation or workspace setup appears incomplete.
+
+### Requirements
+
+1. Inspect the root `package.json`, `pnpm-lock.yaml`, workspace configuration, and the frontend/artifact package configuration before making changes.
+2. Identify the correct package manager and workspace structure. This project uses pnpm workspace commands, so preserve that setup if it is valid.
+3. Install the dependencies from the existing lockfile and ensure the correct package containing Vite has its dependencies installed.
+4. Verify that Vite is declared in the appropriate `package.json` and that the configured development script points to the correct Vite config file.
+5. Check the workspace package names, dependency declarations, and scripts. Fix invalid workspace references or missing dependencies only where necessary.
+6. Do not blindly delete lockfiles, regenerate the entire project, or upgrade every dependency. Make the smallest safe changes.
+7. Preserve the existing React/Vite frontend, Express/Mongoose backend, authentication flows, redesigned EcoCycle UI, and Phase 2 work already present.
+8. Check that Replit's run configuration starts the correct application or workspace.
+9. Start the application and inspect the actual logs and preview. Resolve any additional startup errors revealed after Vite is available.
+10. Verify that the landing page loads and that the backend can start. If the database connection requires secrets or network configuration, diagnose that separately without exposing credentials.
+11. Do not use mock data to hide errors or claim success without testing.
+
+### Final report
+
+Tell me:
+- The root cause of the crash.
+- Which files were changed.
+- The commands or configuration used to fix it.
+- Whether the frontend and backend start successfully.
+- Whether the preview loads.
+- Any remaining errors.
+
+**Important:** Fix the existing imported project in place. Do not create a new application or overwrite working code just to resolve the missing Vite dependency.

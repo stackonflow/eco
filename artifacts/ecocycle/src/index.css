@@ -57,25 +57,25 @@
 
 :root {
   color-scheme: light;
-  --background: 45 33% 96%;
-  --foreground: 153 23% 15%;
-  --border: 145 16% 83%;
-  --input: 145 16% 83%;
-  --card: 42 35% 98%;
-  --card-foreground: 153 23% 15%;
-  --card-border: 145 16% 83%;
-  --popover: 42 35% 98%;
-  --popover-foreground: 153 23% 15%;
-  --popover-border: 145 16% 83%;
+  --background: 42 34% 96%;
+  --foreground: 155 24% 16%;
+  --border: 137 15% 82%;
+  --input: 137 15% 82%;
+  --card: 42 38% 98%;
+  --card-foreground: 155 24% 16%;
+  --card-border: 137 15% 82%;
+  --popover: 42 38% 98%;
+  --popover-foreground: 155 24% 16%;
+  --popover-border: 137 15% 82%;
   --primary: 151 43% 24%;
-  --primary-foreground: 42 35% 98%;
-  --secondary: 135 20% 89%;
-  --secondary-foreground: 153 23% 15%;
-  --muted: 132 18% 91%;
-  --muted-foreground: 148 10% 40%;
-  --accent: 39 71% 58%;
-  --accent-foreground: 153 23% 15%;
-  --destructive: 2 62% 48%;
+  --primary-foreground: 42 38% 98%;
+  --secondary: 132 22% 88%;
+  --secondary-foreground: 155 24% 16%;
+  --muted: 132 20% 91%;
+  --muted-foreground: 150 10% 38%;
+  --accent: 143 30% 77%;
+  --accent-foreground: 155 24% 16%;
+  --destructive: 2 62% 43%;
   --destructive-foreground: 0 0% 100%;
   --ring: 151 43% 24%;
   --chart-1: 151 43% 24%;
@@ -84,7 +84,7 @@
   --chart-4: 20 40% 57%;
   --chart-5: 85 20% 55%;
   --sidebar: 147 27% 18%;
-  --sidebar-foreground: 42 35% 98%;
+  --sidebar-foreground: 42 38% 98%;
   --sidebar-border: 145 16% 83%;
   --sidebar-primary: 151 43% 24%;
   --sidebar-primary-foreground: 42 35% 98%;
@@ -103,12 +103,12 @@
 
 .dark {
   color-scheme: light;
-  --background: 45 33% 96%;
-  --foreground: 153 23% 15%;
-  --border: 145 16% 83%;
-  --input: 145 16% 83%;
-  --card: 42 35% 98%;
-  --card-foreground: 153 23% 15%;
+  --background: 42 34% 96%;
+  --foreground: 155 24% 16%;
+  --border: 137 15% 82%;
+  --input: 137 15% 82%;
+  --card: 42 38% 98%;
+  --card-foreground: 155 24% 16%;
   --sidebar: 147 27% 18%;
   --sidebar-foreground: 42 35% 98%;
   --sidebar-border: 145 16% 83%;
@@ -117,18 +117,18 @@
   --sidebar-accent: 135 20% 89%;
   --sidebar-accent-foreground: 153 23% 15%;
   --sidebar-ring: 151 43% 24%;
-  --popover: 42 35% 98%;
-  --popover-foreground: 153 23% 15%;
+  --popover: 42 38% 98%;
+  --popover-foreground: 155 24% 16%;
   --popover-border: 145 16% 83%;
   --primary: 151 43% 24%;
-  --primary-foreground: 42 35% 98%;
-  --secondary: 135 20% 89%;
-  --secondary-foreground: 153 23% 15%;
-  --muted: 132 18% 91%;
-  --muted-foreground: 148 10% 40%;
-  --accent: 39 71% 58%;
-  --accent-foreground: 153 23% 15%;
-  --destructive: 2 62% 48%;
+  --primary-foreground: 42 38% 98%;
+  --secondary: 132 22% 88%;
+  --secondary-foreground: 155 24% 16%;
+  --muted: 132 20% 91%;
+  --muted-foreground: 150 10% 38%;
+  --accent: 143 30% 77%;
+  --accent-foreground: 155 24% 16%;
+  --destructive: 2 62% 43%;
   --destructive-foreground: 0 0% 100%;
   --ring: 151 43% 24%;
   --chart-1: 151 43% 24%;
@@ -150,7 +150,7 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
     min-width: 320px;
-    background-color: #f4f3e9;
+    background-color: #f5f3eb;
   }
 
   button,
@@ -162,12 +162,12 @@
 }
 
 .site-shell {
-  width: min(1200px, calc(100% - 56px));
+  width: min(1160px, calc(100% - 56px));
   margin-inline: auto;
 }
 
 .eyebrow {
-  color: #547b5d;
+  color: #52745a;
   font: 500 0.73rem/1.2 var(--app-font-mono);
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -175,7 +175,7 @@
 
 .section-title {
   max-width: 760px;
-  color: #203c2d;
+  color: #20382b;
   font-family: var(--app-font-serif);
   font-size: clamp(2rem, 4vw, 3.5rem);
   line-height: 1.08;
@@ -184,10 +184,26 @@
 }
 
 .glow-card {
-  border: 1px solid #d8dfd3;
-  background: #fbfaf4;
+  border: 1px solid #d9dfd3;
+  background: #fbfaf5;
   box-shadow: 0 8px 28px rgba(37, 59, 44, 0.045);
 }
+
+.field {
+  width: 100%;
+  border: 1px solid #cbd5c8;
+  border-radius: 5px;
+  background: #fffef9;
+  padding: 12px 14px;
+  color: #20382b;
+  font-size: .9rem;
+  outline: none;
+}
+.field:focus { border-color: #477956; box-shadow: 0 0 0 3px rgba(71,121,86,.12); }
+.field::placeholder { color: #89978c; }
+.field-label { display: block; margin-bottom: 8px; color: #3b5543; font-size: .78rem; font-weight: 700; }
+.surface { border: 1px solid #d9dfd3; background: #fbfaf5; box-shadow: 0 7px 24px rgba(37,59,44,.045); }
+.status-pill { display:inline-flex; align-items:center; border:1px solid #d4dfd1; border-radius:999px; padding:5px 10px; background:#edf2e9; color:#375b40; font-size:.72rem; font-weight:700; text-transform:capitalize; }
 
 .button-primary {
   display: inline-flex;
@@ -256,6 +272,10 @@
   .site-shell {
     width: min(100% - 36px, 1200px);
   }
+}
+
+@media (max-width: 767px) {
+  .site-shell { width: min(100% - 36px, 1160px); }
 }
 
 @media (prefers-reduced-motion: reduce) {

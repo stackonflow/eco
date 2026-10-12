@@ -7,12 +7,12 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const account = useGetCurrentUser();
   const signedIn = Boolean(account.data?.user);
-  const pickupHref = signedIn ? '/account' : '/register';
+  const pickupHref = signedIn ? '/submit-waste' : '/register';
   const navItems = [
     { label: 'Home', href: '/' },
     { label: 'How It Works', href: '/#how-it-works' },
     { label: 'Waste Categories', href: '/#materials' },
-    { label: 'About', href: '/#about' },
+    { label: 'Why EcoCycle', href: '/#why-ecocycle' },
   ];
 
   return (
