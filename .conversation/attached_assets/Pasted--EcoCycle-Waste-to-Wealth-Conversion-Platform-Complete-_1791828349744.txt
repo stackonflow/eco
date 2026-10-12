@@ -1,0 +1,515 @@
+# EcoCycle — Waste to Wealth Conversion Platform
+## Complete MERN Stack Project — Built from Scratch
+
+Act as a senior full-stack engineer, software architect, and UI/UX designer. Build a complete, functional, modern web application called **EcoCycle — Waste to Wealth Conversion** from scratch.
+
+**IMPORTANT: This is a brand-new project.** Do not ask me to upload an existing codebase, provide a Replit URL, or migrate an existing Java application. Create the entire frontend, backend, database models, APIs, and project structure independently.
+
+I have provided a reference image of a presentation slide titled "How EcoCycle Works". Use it as the visual reference for the website's design.
+
+The application must be more than a static UI mockup. Implement real backend APIs, persistent MongoDB storage, authentication, role-based permissions, and working end-to-end workflows.
+
+---
+
+## 1. Technology Stack
+
+Use the MERN stack exclusively.
+
+- **Frontend:** React + Vite
+- **Backend:** Node.js + Express.js
+- **Database:** MongoDB + Mongoose
+- **Styling:** CSS with responsive layouts and reusable components
+- **Authentication:** JWT + bcrypt
+- **API requests:** Axios
+- **Validation:** Zod or an equivalent validation library
+- **Charts:** Recharts or another suitable React chart library
+- **QR codes:** A suitable QR code generation library
+- **Icons:** Lucide React
+
+Use JavaScript with ES modules unless there is a compelling technical reason otherwise.
+
+Do not use Java, Spring Boot, MySQL, or another backend framework. Do not generate a separate mock backend.
+
+## 2. Project Architecture
+
+Create the complete project structure yourself.
+
+```text
+ecocycle/
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   ├── layouts/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── hooks/
+│   │   ├── context/
+│   │   ├── utils/
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── .env.example
+│   └── package.json
+├── backend/
+│   ├── src/
+│   │   ├── config/
+│   │   ├── models/
+│   │   ├── controllers/
+│   │   ├── routes/
+│   │   ├── middleware/
+│   │   ├── services/
+│   │   ├── utils/
+│   │   ├── app.js
+│   │   └── server.js
+│   ├── .env.example
+│   └── package.json
+├── .gitignore
+└── README.md
+```
+
+You may improve this structure as needed, but keep it modular, organized, and beginner-friendly.
+
+Create all necessary files and provide the exact terminal commands required to run the application.
+
+## 3. Application Concept
+
+EcoCycle connects people who want to dispose of recyclable waste with waste collectors, recycling companies, and administrators.
+
+The platform converts waste into a potential source of income by managing collection, verification, inventory, recycling, sales, and payments.
+
+Implement four distinct roles:
+
+- **User:** Submits waste, books pickups, tracks requests, views receipts, and checks payments.
+- **Collector:** Manages assigned pickups, verifies waste weight and quality, and records collection details.
+- **Recycler:** Browses available materials, submits purchase offers, and tracks orders.
+- **Admin:** Manages the complete platform, including users, rates, collections, inventory, sales, payments, and expenses.
+
+Every role must have its own dashboard, navigation, and authorized functionality.
+
+## 4. Design Requirements — Follow the Reference Image
+
+Use the uploaded reference image as the primary visual reference for the "How EcoCycle Works" section and as inspiration for the rest of the website.
+
+### Visual identity
+
+Create a polished, futuristic, sustainability-focused design featuring:
+
+- Dark navy and deep blue backgrounds.
+- Blue gradient cards.
+- Cyan and purple accent colors.
+- Thin glowing borders.
+- Rounded cards and subtle shadows.
+- Elegant headings and modern typography.
+- Clean spacing and consistent alignment.
+- Smooth, restrained hover effects.
+- Responsive layouts for desktop, tablet, and mobile.
+
+Avoid generic templates, excessive gradients, unnecessary animations, and cluttered dashboards.
+
+### Landing page
+
+Create a complete landing page with:
+
+1. Responsive navbar with logo, navigation links, login, and registration.
+2. Hero section with the headline **"Turn Your Waste Into Wealth."**
+3. Supporting text explaining EcoCycle's purpose.
+4. Primary CTA: "Schedule a Pickup".
+5. Secondary CTA: "Explore How It Works".
+6. Waste category cards.
+7. The reference-inspired "How EcoCycle Works" section.
+8. Platform features and benefits.
+9. Environmental impact section based on real data when available.
+10. Call-to-action section.
+11. Professional footer with navigation and contact information.
+
+Use appropriate waste and recycling illustrations or icons. Do not use unrelated placeholder imagery.
+
+### Reference-inspired workflow section
+
+Create six numbered cards in a two-column desktop layout and a single-column mobile layout.
+
+**01 — Register**
+
+Users create an account on the platform.
+
+**02 — Book a Pickup**
+
+Users select their waste category, estimated quantity, address, and preferred pickup time.
+
+**03 — Verify the Waste**
+
+Collectors verify actual weight and material quality.
+
+**04 — Receive Payment**
+
+The final payable amount is calculated using verified weight and the approved rate.
+
+**05 — Sort and Store**
+
+Collected materials are categorized and recorded in inventory.
+
+**06 — Sell to Recyclers**
+
+EcoCycle matches sorted materials with suitable recycling companies.
+
+Add the process summary at the bottom:
+
+`User Waste → Collection → Verification → Payment → Resale`
+
+Match the reference image's dark background, cyan underline, blue gradient cards, cyan/purple borders, circular indicators, and numbered headings.
+
+## 5. Complete Waste-to-Wealth Workflow
+
+Implement the following functionality as real application features.
+
+### Step 1: Registration and authentication
+
+- Registration and login pages.
+- Secure password hashing with bcrypt.
+- JWT authentication with expiration.
+- Protected frontend routes.
+- Backend authentication middleware.
+- Role-based authorization.
+- User profile management.
+- Logout functionality.
+- Proper validation and error messages.
+
+Public registration must not allow users to choose the `admin` role. Provide a secure way to create the first administrator, such as a documented seed script using environment configuration.
+
+### Step 2: Waste submission
+
+Allow users to submit:
+
+- Plastic
+- Paper
+- Cardboard
+- Metal
+- Glass
+- E-waste
+- Organic waste
+
+Each request should contain the waste category, estimated weight, pickup address, preferred date and time, optional description, and optional images.
+
+Validate inputs on both frontend and backend.
+
+### Step 3: Estimated waste value
+
+Create an administrator-configurable rate system for each waste category.
+
+Calculate:
+
+`Estimated Value = Estimated Quantity × Rate per kg`
+
+Show the rate and estimated total before submission.
+
+Label the amount as an estimate, because the actual payment depends on verified weight and approved rates.
+
+### Step 4: Pickup scheduling
+
+Collectors should be able to view and manage pickup requests assigned to them.
+
+Implement request statuses such as:
+
+`Pending → Accepted → Scheduled → Collected → Verified → Completed`
+
+Support rejection and cancellation where appropriate.
+
+Users should be able to track their pickup status and view scheduled collection details.
+
+Prevent unauthorized collectors from modifying requests assigned to other collectors.
+
+### Step 5: Weight and quality verification
+
+Allow authorized collectors to record:
+
+- Actual measured weight.
+- Material quality.
+- Approved final rate per kilogram.
+- Verification notes.
+- Collector identity.
+- Verification timestamp.
+
+Calculate:
+
+`Final Payable Amount = Verified Weight × Approved Rate per kg`
+
+Keep estimated and verified values separate. Only authorized roles may perform verification.
+
+### Step 6: Digital receipts
+
+Generate a unique receipt after verification.
+
+Include:
+
+- Receipt ID.
+- Pickup request ID.
+- User details.
+- Waste category.
+- Estimated weight and value.
+- Verified weight.
+- Final rate.
+- Final payable amount.
+- Verification date.
+- Payment status.
+
+Users must be able to view and print or download receipts.
+
+### Step 7: Inventory and QR tracking
+
+After successful verification, create an inventory batch with:
+
+- Unique batch ID.
+- Waste category.
+- Verified quantity.
+- Available quantity.
+- Reserved quantity.
+- Quality classification.
+- Collection source.
+- Collection date.
+- Processing status.
+- Storage location, if applicable.
+
+Generate a QR code that identifies the batch and links to its authorized details page.
+
+Maintain an inventory history and prevent overselling or allocating the same quantity twice.
+
+### Step 8: Waste processing
+
+Support suitable workflows for:
+
+- Plastic, paper, cardboard, metal, and glass recycling.
+- Authorized e-waste processing.
+- Organic waste composting or biogas processing.
+
+Allow administrators to manage processing destinations and statuses.
+
+Do not claim that EcoCycle physically processes waste unless that operation is genuinely provided.
+
+### Step 9: Recycler matching and purchase offers
+
+Create a recycler dashboard where approved recycling companies can:
+
+- Browse available material batches.
+- Filter by category and quality.
+- View available quantities.
+- Specify required quantities.
+- Submit offers with proposed rates.
+- View offer acceptance or rejection.
+- Track orders and transactions.
+
+Match buyers and materials based on category compatibility, quantity requirements, quality, and offered price.
+
+Show understandable reasons why a particular offer matches a batch.
+
+### Step 10: Sales and payments
+
+When an authorized offer is accepted:
+
+- Create a sales order.
+- Reserve the required inventory.
+- Record the agreed price and quantity.
+- Track dispatch and sale status.
+- Update inventory after the appropriate confirmed transaction stage.
+- Record payment status and transaction references.
+
+Distinguish between user payouts, recycler payments, platform revenue, operating expenses, and profit or loss.
+
+Initially support manually recorded payments. Do not mark payments as completed without confirmation.
+
+Payment gateway integration can be added later.
+
+### Step 11: Admin dashboard
+
+Build a comprehensive dashboard showing:
+
+- Total users.
+- Active collectors and recyclers.
+- Pending and completed pickups.
+- Waste collected by category.
+- Available and reserved inventory.
+- Recycler offers.
+- Sales and revenue.
+- User payout liabilities.
+- Recycler payment status.
+- Operating expenses.
+- Recent transactions.
+- Pickup and sales trends.
+
+Include management pages for users, collectors, recyclers, waste rates, pickup requests, inventory, processing, offers, sales, payments, and expenses.
+
+Implement search, filtering, pagination, confirmation dialogs, and validation.
+
+All admin APIs must enforce authorization on the backend.
+
+### Step 12: Impact and analytics
+
+Show actual database-driven metrics such as:
+
+- Total waste collected.
+- Total waste recycled or processed.
+- Material quantities by category.
+- User payouts.
+- Recycler sales revenue.
+- Monthly collection trends.
+- Sales trends.
+
+Only calculate environmental impact metrics when a defensible calculation method is configured. Clearly label estimates and never fabricate platform statistics.
+
+## 6. Database Models
+
+Create appropriate Mongoose models for:
+
+- User
+- WasteRate
+- PickupRequest
+- Receipt
+- InventoryBatch
+- InventoryTransaction
+- RecyclerOffer
+- SalesOrder
+- Payment
+- Expense
+
+Use appropriate relationships, timestamps, validation, and indexes.
+
+Design schemas to prevent inconsistent financial records and inventory quantities.
+
+For inventory reservation and sales operations, use safe atomic updates or MongoDB transactions where supported. Do not rely on frontend calculations to enforce business rules.
+
+## 7. Backend API
+
+Create organized Express routes and controllers for:
+
+- Authentication and profiles.
+- Waste rates.
+- Pickup requests and scheduling.
+- Collection verification.
+- Receipts.
+- Inventory and QR tracking.
+- Recycler offers.
+- Sales orders.
+- Payments and expenses.
+- Admin analytics.
+
+Use consistent API responses, meaningful HTTP status codes, centralized error handling, request validation, and authorization middleware.
+
+Document the API endpoints in the README.
+
+## 8. Security Requirements
+
+- Never store plaintext passwords.
+- Never expose password hashes.
+- Store backend secrets only in backend environment variables.
+- Use JWT expiration and secure token-handling practices.
+- Configure CORS for the actual frontend origin.
+- Validate and sanitize all incoming data.
+- Enforce role-based permissions on every protected backend endpoint.
+- Prevent users from accessing another user's private requests or receipts.
+- Prevent collectors from modifying unauthorized requests.
+- Prevent recyclers from changing inventory or approving their own offers.
+- Prevent unauthorized price, weight, payment, and role modifications.
+- Prevent negative inventory and duplicate sales.
+- Add sensible request limits and upload restrictions.
+- Use safe production error messages.
+- Do not commit `.env` files or credentials to Git.
+
+## 9. Environment Configuration
+
+Provide `.env.example` files.
+
+Backend configuration should include:
+
+- `PORT`
+- `MONGODB_URI`
+- `JWT_SECRET`
+- `CLIENT_ORIGIN`
+
+Frontend configuration should include:
+
+- `VITE_API_BASE_URL`
+
+Explain how to create a MongoDB Atlas database and configure its connection string.
+
+Use placeholder credentials in examples. Never request that I share real secrets in chat.
+
+## 10. Development Process
+
+Build the project incrementally instead of generating a massive, untested code dump.
+
+### Phase 1 — Foundation
+
+- Create the project from scratch.
+- Set up React and Vite.
+- Create the landing page and reference-inspired design.
+- Set up Express.
+- Connect MongoDB.
+- Implement registration and login.
+- Implement role-based authentication.
+- Verify frontend/backend communication.
+
+### Phase 2 — Collection
+
+- Waste submission.
+- Rate management.
+- Value estimation.
+- Pickup scheduling.
+- Collector dashboard.
+- Status tracking.
+
+### Phase 3 — Verification and inventory
+
+- Weight verification.
+- Digital receipts.
+- Inventory batches.
+- QR codes.
+- Inventory history.
+
+### Phase 4 — Recycling and sales
+
+- Recycler dashboard.
+- Material matching.
+- Purchase offers.
+- Sales orders.
+- Inventory reservation.
+- Payment records.
+
+### Phase 5 — Administration and finalization
+
+- Admin dashboard.
+- Analytics.
+- Expenses.
+- Role and security checks.
+- Error handling.
+- Testing.
+- Responsive design refinements.
+- Deployment instructions.
+
+At the end of each phase, explain what works, which files were created, how to run it, and how to test it before proceeding.
+
+## 11. Working Style
+
+I am a student building this project and need clear, practical guidance.
+
+- Start from an empty project.
+- Do not ask for an existing codebase.
+- Give exact terminal commands and working directory instructions.
+- Provide complete files with their paths.
+- Do not provide disconnected snippets when complete files are needed.
+- Explain configuration and setup steps clearly.
+- Do not pretend unimplemented features work.
+- Do not use mock data as a substitute for real backend functionality.
+- If sample data is useful during development, clearly identify it as seed data.
+- Avoid unnecessary dependencies.
+- Keep the code maintainable and suitable for a college project demonstration.
+- Test each milestone and fix errors before moving on.
+
+## First Task
+
+Begin with **Phase 1**.
+
+First, show me the proposed project structure and the exact commands to create the frontend and backend. Then provide the complete source files for the first milestone, including the landing page, the reference-inspired "How EcoCycle Works" section, Express server, MongoDB connection, user model, registration API, login API, authentication middleware, and frontend integration.
+
+Make sure the application can actually run locally. Clearly explain how to configure MongoDB Atlas, create the first administrator securely, start both development servers, and verify registration and login.
+
+**The goal is a new, functional MERN application built from scratch—not a migration, not just a design mockup, and not an existing-codebase modification.**
