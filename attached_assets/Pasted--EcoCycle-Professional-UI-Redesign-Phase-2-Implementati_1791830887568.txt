@@ -1,0 +1,264 @@
+# EcoCycle — Professional UI Redesign + Phase 2 Implementation
+
+Act as a senior product designer, frontend engineer, and full-stack MERN developer.
+
+EcoCycle Phase 1 is implemented. Registration, login, profile updates, and logout have been tested against MongoDB Atlas. Before proceeding further, I want you to **redesign the existing UI to a professional, production-quality standard inspired by the website screenshot I provided**, then implement Phase 2: Waste Submissions and Rate Management.
+
+Do not restart the project, replace the backend unnecessarily, or break any working authentication functionality.
+
+## PART A — Redesign the UI Before Phase 2
+
+### 1. Design direction
+
+Use the uploaded clinic website screenshot as a reference for the quality, composition, typography, spacing, and visual hierarchy—not its medical content or branding.
+
+I want EcoCycle to look like a website intentionally designed by a professional product designer, not a generic AI-generated template.
+
+**Avoid the typical "vibe-coded" appearance.** Specifically, do not use:
+- Excessive glowing borders and neon outlines.
+- Blue-purple gradients on every card.
+- Unnecessary glassmorphism or blur effects.
+- Huge rounded cards for every section.
+- Repeated card grids where simpler layouts would work better.
+- Random decorative circles and floating elements.
+- Excessive animations, bounce effects, and hover transformations.
+- Emoji as a substitute for a coherent icon system.
+- Generic dashboard templates with no visual identity.
+- Inconsistent spacing, typography, or button styles.
+- Artificial statistics, fake testimonials, or invented impact claims.
+
+Do not simply change colors on the existing layout. Rethink the page composition, hierarchy, and spacing.
+
+### 2. Visual inspiration
+
+The supplied screenshot demonstrates the qualities I want:
+
+- A strong, simple navigation bar.
+- A large, carefully composed hero section.
+- A clear headline with balanced line lengths.
+- Supporting text with comfortable readability.
+- One primary CTA and one secondary CTA.
+- A relevant, high-quality hero image integrated into the composition.
+- A restrained green-toned background transitioning into a light neutral area.
+- A compact horizontal statistics strip.
+- Generous whitespace and consistent alignment.
+- Clear contrast between the hero, content, and supporting sections.
+
+Apply these design principles to EcoCycle without copying the clinic's branding, text, or imagery.
+
+### 3. EcoCycle visual identity
+
+Use a refined sustainability-focused palette:
+- Deep forest green for primary branding and important actions.
+- Muted emerald for accents.
+- Warm off-white and light neutral backgrounds.
+- Dark charcoal or deep green for headings.
+- Soft sage tones for secondary surfaces.
+- Restrained orange or amber accents only where useful.
+
+Use a consistent typography system, a limited set of spacing values, subtle borders, and carefully selected shadows.
+
+Buttons, forms, navigation, headings, icons, and dashboards must share a consistent design language.
+
+Use Lucide icons where icons are necessary. Use high-quality, relevant recycling imagery or illustrations. Do not use random stock images unrelated to waste management.
+
+### 4. Landing page layout
+
+Redesign the landing page in this order:
+
+**Navbar**
+- EcoCycle logo and wordmark.
+- Home, How It Works, Waste Categories, About.
+- Login and Get Started actions.
+- Responsive mobile navigation.
+
+**Hero section**
+- A small trust or sustainability label.
+- Headline: "Turn Your Waste Into Wealth."
+- Supporting copy explaining how EcoCycle connects households with waste collectors and recycling companies.
+- Primary CTA: "Schedule a Pickup".
+- Secondary CTA: "Explore How It Works".
+- A visually strong, relevant recycling or waste-collection image.
+- Balanced two-column composition on desktop and a clean stacked layout on mobile.
+
+**Trust and platform metrics**
+- A compact horizontal strip showing relevant platform metrics only when supported by actual database data.
+- Do not invent user counts, recycling statistics, ratings, or environmental claims.
+- If no data exists yet, use genuine platform benefits instead of fabricated numbers.
+
+**How EcoCycle Works**
+Present six concise steps:
+1. Register.
+2. Submit Waste.
+3. Schedule Collection.
+4. Verify Weight and Quality.
+5. Receive Payment.
+6. Recycle and Resell.
+
+Use a clean editorial layout with clear numbering and concise descriptions. The uploaded EcoCycle workflow reference can inform the content, but do not turn every section into the same glowing card design.
+
+**Waste categories**
+Present plastic, paper, cardboard, metal, glass, e-waste, and organic waste using a coherent icon system and simple layouts.
+
+**Why EcoCycle**
+Explain convenience, transparent pricing, collection tracking, and responsible recycling.
+
+**Call to action and footer**
+Finish with a clear action and a well-organized footer.
+
+### 5. Authenticated application UI
+
+Redesign the login, registration, profile, and dashboard screens to match the new visual identity.
+
+Use:
+- Consistent form labels and input sizes.
+- Clear validation and error messages.
+- Proper loading and disabled states.
+- Accessible contrast and keyboard focus.
+- Useful empty states.
+- Clear page titles and navigation.
+- Consistent table and list layouts.
+
+Dashboards should prioritize useful information rather than decorative cards. Use charts and tables only where they improve understanding.
+
+### 6. Implementation constraints
+
+- Inspect the current frontend before changing it.
+- Reuse working components where appropriate, but do not preserve poor design merely for backward compatibility.
+- Keep the current React + Vite frontend and Express + MongoDB backend.
+- Preserve all existing API contracts unless a change is necessary.
+- Do not change authentication behavior or database credentials unnecessarily.
+- Do not remove functional code just to simplify the redesign.
+- Make the entire website responsive across desktop, tablet, and mobile.
+- Check for horizontal overflow, broken images, layout shifts, and inconsistent spacing.
+- Do not add unnecessary dependencies.
+- Do not replace real backend data with mock data.
+
+First complete the visual redesign and verify that registration, login, profile updates, and logout still work.
+
+---
+
+## PART B — Phase 2: Waste Submissions and Rate Management
+
+After the redesign is complete, implement Phase 2 using the existing MERN architecture.
+
+### 1. Waste categories
+
+Support:
+- Plastic
+- Paper
+- Cardboard
+- Metal
+- Glass
+- E-waste
+- Organic waste
+
+### 2. Waste rate management
+
+Create a Mongoose `WasteRate` model containing:
+- Waste category.
+- Rate per kilogram.
+- Active/inactive status.
+- Created and updated timestamps.
+
+Implement admin-only functionality to create, edit, activate, and deactivate rates.
+
+Only authorized administrators can modify rates. Ordinary users must never be able to change prices.
+
+### 3. Waste submission form
+
+Create a polished, responsive waste submission page with:
+- Waste category selector.
+- Estimated quantity in kilograms.
+- Pickup address.
+- Preferred pickup date and time.
+- Optional description.
+- Optional image upload if the existing infrastructure supports it.
+
+Validate required fields, positive quantities, and valid future pickup dates where applicable.
+
+Display the current rate and calculate the estimated value dynamically.
+
+Formula:
+
+`Estimated Value = Estimated Quantity (kg) × Current Rate per kg`
+
+Clearly state that this is an estimate, not a guaranteed payout.
+
+### 4. Backend and database
+
+Create a `PickupRequest` Mongoose model containing:
+- User reference.
+- Waste category.
+- Estimated quantity.
+- Pickup address.
+- Preferred date and time.
+- Optional description.
+- Rate snapshot used for the estimate.
+- Estimated value.
+- Request status.
+- Created and updated timestamps.
+
+Store all requests in MongoDB Atlas.
+
+Capture the applicable rate on the backend when the request is created. Never trust a price or user ID supplied by the frontend.
+
+### 5. APIs
+
+Implement authenticated APIs for:
+- Retrieving active waste rates.
+- Creating waste submission requests.
+- Retrieving the logged-in user's requests.
+- Retrieving an individual request with appropriate authorization.
+- Admin listing and management of all requests.
+- Admin creation and management of waste rates.
+
+Use input validation, appropriate HTTP status codes, centralized error handling, and role-based authorization.
+
+Users must only be able to access their own requests. Admins may access requests across users.
+
+### 6. User interface
+
+Create a "Submit Waste" page and a "My Waste Requests" page.
+
+The request list should show:
+- Waste category.
+- Estimated quantity.
+- Rate per kilogram.
+- Estimated value.
+- Submission date.
+- Current status.
+
+Create an admin rate-management interface with clear forms, tables, loading states, confirmation dialogs, and success/error feedback.
+
+Match these pages to the redesigned EcoCycle visual identity. Do not introduce a different design system for Phase 2.
+
+### 7. Testing
+
+Test:
+- Valid waste submission.
+- Invalid and missing fields.
+- Invalid quantities.
+- Rate calculation.
+- Inactive or missing rates.
+- Unauthorized requests.
+- User access restrictions.
+- Admin-only rate management.
+- MongoDB persistence after refresh.
+- Existing authentication functionality.
+
+Use actual database records, not fake data. Do not claim a test passed unless it was actually run.
+
+### 8. Final deliverable
+
+When finished, provide:
+- Summary of the visual redesign.
+- List of files created or modified.
+- Features completed.
+- API endpoints added.
+- Tests performed and their actual results.
+- Any remaining issues or setup requirements.
+
+**Execution order:** First redesign and verify the existing UI. Then implement Phase 2. Do not start pickup assignment, collector scheduling, weight verification, recycler offers, or sales yet; those belong to later phases.
+
+The goal is a cohesive, professional EcoCycle product with a carefully designed frontend and a functioning backend—not a generic template with features bolted onto it.
