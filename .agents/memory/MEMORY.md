@@ -1,0 +1,1 @@
+- [ESM server imports](node-esm-cjs-imports.md) — external CommonJS packages need runtime import checks; TypeScript may accept imports that fail after bundling.

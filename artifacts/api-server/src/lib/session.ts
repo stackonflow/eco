@@ -1,5 +1,5 @@
 import type { CookieOptions, Response } from "express";
-import * as jwt from "jsonwebtoken";
+import jwt, { type JwtPayload } from "jsonwebtoken";
 import type { UserRole } from "../models/user";
 
 export const sessionCookieName = "ecocycle_token";
@@ -43,6 +43,6 @@ export function clearSession(response: Response): void {
   response.clearCookie(sessionCookieName, cookieOptions());
 }
 
-export function verifySession(token: string): jwt.JwtPayload | string {
+export function verifySession(token: string): JwtPayload | string {
   return jwt.verify(token, getJwtSecret(), { issuer: "ecocycle" });
 }

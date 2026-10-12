@@ -19,6 +19,9 @@ root unless noted otherwise.
 1. Create a MongoDB Atlas cluster and database named `ecocycle`.
 2. Create a database user with access only to that database, and allow network
    access from the environment where the API will run.
+   Replit development egress IPs can change, and published apps do not have
+   fixed outbound IPs. For production Atlas allowlisting, route through a
+   static-IP proxy rather than assuming a development IP will remain valid.
 3. Copy `artifacts/api-server/.env.example` to
    `artifacts/api-server/.env` for local development, then set `MONGODB_URI`
    and a unique random `JWT_SECRET`. Never commit `.env`.
