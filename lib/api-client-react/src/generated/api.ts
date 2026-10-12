@@ -25,8 +25,14 @@ import type {
   HealthStatus,
   LoginInput,
   LogoutResponse,
+  PickupRequest,
+  PickupRequestInput,
+  PickupRequestStatusUpdate,
   ProfileUpdateInput,
-  RegisterInput
+  RegisterInput,
+  WasteRate,
+  WasteRateInput,
+  WasteRateUpdate
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -547,5 +553,744 @@ export const useLogoutUser = <TError = ErrorType<unknown>,
         TContext
       > => {
       return useMutation(getLogoutUserMutationOptions(options));
+    }
+
+export const getListActiveWasteRatesUrl = () => {
+
+
+
+
+  return `/api/waste-rates`
+}
+
+/**
+ * @summary List active waste rates for the signed-in user
+ */
+export const listActiveWasteRates = async ( options?: Parameters<typeof customFetch>[1]): Promise<WasteRate[]> => {
+
+  return customFetch<WasteRate[]>(getListActiveWasteRatesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListActiveWasteRatesQueryKey = () => {
+    return [
+    `/api/waste-rates`
+    ] as const;
+    }
+
+
+export const getListActiveWasteRatesQueryOptions = <TData = Awaited<ReturnType<typeof listActiveWasteRates>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listActiveWasteRates>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListActiveWasteRatesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listActiveWasteRates>>> = ({ signal }) => listActiveWasteRates({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listActiveWasteRates>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListActiveWasteRatesQueryResult = NonNullable<Awaited<ReturnType<typeof listActiveWasteRates>>>
+export type ListActiveWasteRatesQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary List active waste rates for the signed-in user
+ */
+
+export function useListActiveWasteRates<TData = Awaited<ReturnType<typeof listActiveWasteRates>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listActiveWasteRates>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListActiveWasteRatesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getListMyWasteRequestsUrl = () => {
+
+
+
+
+  return `/api/waste-requests`
+}
+
+/**
+ * @summary List pickup requests belonging to the signed-in user
+ */
+export const listMyWasteRequests = async ( options?: Parameters<typeof customFetch>[1]): Promise<PickupRequest[]> => {
+
+  return customFetch<PickupRequest[]>(getListMyWasteRequestsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListMyWasteRequestsQueryKey = () => {
+    return [
+    `/api/waste-requests`
+    ] as const;
+    }
+
+
+export const getListMyWasteRequestsQueryOptions = <TData = Awaited<ReturnType<typeof listMyWasteRequests>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyWasteRequests>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListMyWasteRequestsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyWasteRequests>>> = ({ signal }) => listMyWasteRequests({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listMyWasteRequests>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListMyWasteRequestsQueryResult = NonNullable<Awaited<ReturnType<typeof listMyWasteRequests>>>
+export type ListMyWasteRequestsQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary List pickup requests belonging to the signed-in user
+ */
+
+export function useListMyWasteRequests<TData = Awaited<ReturnType<typeof listMyWasteRequests>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyWasteRequests>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListMyWasteRequestsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreateWasteRequestUrl = () => {
+
+
+
+
+  return `/api/waste-requests`
+}
+
+/**
+ * @summary Submit a pickup request using the current active rate
+ */
+export const createWasteRequest = async (pickupRequestInput: PickupRequestInput, options?: Parameters<typeof customFetch>[1]): Promise<PickupRequest> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<PickupRequest>(getCreateWasteRequestUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(pickupRequestInput)
+  }
+);}
+
+
+
+
+
+export const getCreateWasteRequestMutationKey = () => ['createWasteRequest'] as const;
+
+export const getCreateWasteRequestMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createWasteRequest>>, TError,CreateWasteRequestMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createWasteRequest>>, TError,CreateWasteRequestMutationVariables, TContext> => {
+
+const mutationKey = getCreateWasteRequestMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createWasteRequest>>, CreateWasteRequestMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createWasteRequest(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateWasteRequestMutationResult = NonNullable<Awaited<ReturnType<typeof createWasteRequest>>>
+    export type CreateWasteRequestMutationBody = BodyType<PickupRequestInput>
+    export type CreateWasteRequestMutationError = ErrorType<ErrorResponse>
+    export type CreateWasteRequestMutationVariables = {data: BodyType<PickupRequestInput>}
+
+    /**
+ * @summary Submit a pickup request using the current active rate
+ */
+export const useCreateWasteRequest = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createWasteRequest>>, TError,CreateWasteRequestMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createWasteRequest>>,
+        TError,
+        CreateWasteRequestMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateWasteRequestMutationOptions(options));
+    }
+
+export const getGetWasteRequestUrl = (requestId: string,) => {
+
+
+
+
+  return `/api/waste-requests/${requestId}`
+}
+
+/**
+ * @summary View an owned request or one accessible to an administrator
+ */
+export const getWasteRequest = async (requestId: string, options?: Parameters<typeof customFetch>[1]): Promise<PickupRequest> => {
+
+  return customFetch<PickupRequest>(getGetWasteRequestUrl(requestId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetWasteRequestQueryKey = (requestId: string,) => {
+    return [
+    `/api/waste-requests/${requestId}`
+    ] as const;
+    }
+
+
+export const getGetWasteRequestQueryOptions = <TData = Awaited<ReturnType<typeof getWasteRequest>>, TError = ErrorType<ErrorResponse>>(requestId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getWasteRequest>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetWasteRequestQueryKey(requestId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getWasteRequest>>> = ({ signal }) => getWasteRequest(requestId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: requestId !== null && requestId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getWasteRequest>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetWasteRequestQueryResult = NonNullable<Awaited<ReturnType<typeof getWasteRequest>>>
+export type GetWasteRequestQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary View an owned request or one accessible to an administrator
+ */
+
+export function useGetWasteRequest<TData = Awaited<ReturnType<typeof getWasteRequest>>, TError = ErrorType<ErrorResponse>>(
+ requestId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getWasteRequest>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetWasteRequestQueryOptions(requestId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getListAllWasteRatesUrl = () => {
+
+
+
+
+  return `/api/admin/waste-rates`
+}
+
+/**
+ * @summary List active and inactive rates
+ */
+export const listAllWasteRates = async ( options?: Parameters<typeof customFetch>[1]): Promise<WasteRate[]> => {
+
+  return customFetch<WasteRate[]>(getListAllWasteRatesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListAllWasteRatesQueryKey = () => {
+    return [
+    `/api/admin/waste-rates`
+    ] as const;
+    }
+
+
+export const getListAllWasteRatesQueryOptions = <TData = Awaited<ReturnType<typeof listAllWasteRates>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAllWasteRates>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListAllWasteRatesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listAllWasteRates>>> = ({ signal }) => listAllWasteRates({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listAllWasteRates>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListAllWasteRatesQueryResult = NonNullable<Awaited<ReturnType<typeof listAllWasteRates>>>
+export type ListAllWasteRatesQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List active and inactive rates
+ */
+
+export function useListAllWasteRates<TData = Awaited<ReturnType<typeof listAllWasteRates>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAllWasteRates>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListAllWasteRatesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreateWasteRateUrl = () => {
+
+
+
+
+  return `/api/admin/waste-rates`
+}
+
+/**
+ * @summary Create a waste rate
+ */
+export const createWasteRate = async (wasteRateInput: WasteRateInput, options?: Parameters<typeof customFetch>[1]): Promise<WasteRate> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<WasteRate>(getCreateWasteRateUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(wasteRateInput)
+  }
+);}
+
+
+
+
+
+export const getCreateWasteRateMutationKey = () => ['createWasteRate'] as const;
+
+export const getCreateWasteRateMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createWasteRate>>, TError,CreateWasteRateMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createWasteRate>>, TError,CreateWasteRateMutationVariables, TContext> => {
+
+const mutationKey = getCreateWasteRateMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createWasteRate>>, CreateWasteRateMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createWasteRate(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateWasteRateMutationResult = NonNullable<Awaited<ReturnType<typeof createWasteRate>>>
+    export type CreateWasteRateMutationBody = BodyType<WasteRateInput>
+    export type CreateWasteRateMutationError = ErrorType<ErrorResponse>
+    export type CreateWasteRateMutationVariables = {data: BodyType<WasteRateInput>}
+
+    /**
+ * @summary Create a waste rate
+ */
+export const useCreateWasteRate = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createWasteRate>>, TError,CreateWasteRateMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createWasteRate>>,
+        TError,
+        CreateWasteRateMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateWasteRateMutationOptions(options));
+    }
+
+export const getUpdateWasteRateUrl = (rateId: string,) => {
+
+
+
+
+  return `/api/admin/waste-rates/${rateId}`
+}
+
+/**
+ * @summary Update the price or active status of a rate
+ */
+export const updateWasteRate = async (rateId: string,
+    wasteRateUpdate: WasteRateUpdate, options?: Parameters<typeof customFetch>[1]): Promise<WasteRate> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<WasteRate>(getUpdateWasteRateUrl(rateId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(wasteRateUpdate)
+  }
+);}
+
+
+
+
+
+export const getUpdateWasteRateMutationKey = () => ['updateWasteRate'] as const;
+
+export const getUpdateWasteRateMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateWasteRate>>, TError,UpdateWasteRateMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateWasteRate>>, TError,UpdateWasteRateMutationVariables, TContext> => {
+
+const mutationKey = getUpdateWasteRateMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateWasteRate>>, UpdateWasteRateMutationVariables> = (props) => {
+          const {rateId,data} = props ?? {};
+
+          return  updateWasteRate(rateId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateWasteRateMutationResult = NonNullable<Awaited<ReturnType<typeof updateWasteRate>>>
+    export type UpdateWasteRateMutationBody = BodyType<WasteRateUpdate>
+    export type UpdateWasteRateMutationError = ErrorType<ErrorResponse>
+    export type UpdateWasteRateMutationVariables = {rateId: string;data: BodyType<WasteRateUpdate>}
+
+    /**
+ * @summary Update the price or active status of a rate
+ */
+export const useUpdateWasteRate = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateWasteRate>>, TError,UpdateWasteRateMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateWasteRate>>,
+        TError,
+        UpdateWasteRateMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateWasteRateMutationOptions(options));
+    }
+
+export const getListAllWasteRequestsUrl = () => {
+
+
+
+
+  return `/api/admin/waste-requests`
+}
+
+/**
+ * @summary List pickup requests for administration
+ */
+export const listAllWasteRequests = async ( options?: Parameters<typeof customFetch>[1]): Promise<PickupRequest[]> => {
+
+  return customFetch<PickupRequest[]>(getListAllWasteRequestsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListAllWasteRequestsQueryKey = () => {
+    return [
+    `/api/admin/waste-requests`
+    ] as const;
+    }
+
+
+export const getListAllWasteRequestsQueryOptions = <TData = Awaited<ReturnType<typeof listAllWasteRequests>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAllWasteRequests>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListAllWasteRequestsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listAllWasteRequests>>> = ({ signal }) => listAllWasteRequests({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listAllWasteRequests>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListAllWasteRequestsQueryResult = NonNullable<Awaited<ReturnType<typeof listAllWasteRequests>>>
+export type ListAllWasteRequestsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List pickup requests for administration
+ */
+
+export function useListAllWasteRequests<TData = Awaited<ReturnType<typeof listAllWasteRequests>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAllWasteRequests>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListAllWasteRequestsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getUpdateWasteRequestStatusUrl = (requestId: string,) => {
+
+
+
+
+  return `/api/admin/waste-requests/${requestId}`
+}
+
+/**
+ * @summary Update the status of a pickup request
+ */
+export const updateWasteRequestStatus = async (requestId: string,
+    pickupRequestStatusUpdate: PickupRequestStatusUpdate, options?: Parameters<typeof customFetch>[1]): Promise<PickupRequest> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<PickupRequest>(getUpdateWasteRequestStatusUrl(requestId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(pickupRequestStatusUpdate)
+  }
+);}
+
+
+
+
+
+export const getUpdateWasteRequestStatusMutationKey = () => ['updateWasteRequestStatus'] as const;
+
+export const getUpdateWasteRequestStatusMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateWasteRequestStatus>>, TError,UpdateWasteRequestStatusMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateWasteRequestStatus>>, TError,UpdateWasteRequestStatusMutationVariables, TContext> => {
+
+const mutationKey = getUpdateWasteRequestStatusMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateWasteRequestStatus>>, UpdateWasteRequestStatusMutationVariables> = (props) => {
+          const {requestId,data} = props ?? {};
+
+          return  updateWasteRequestStatus(requestId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateWasteRequestStatusMutationResult = NonNullable<Awaited<ReturnType<typeof updateWasteRequestStatus>>>
+    export type UpdateWasteRequestStatusMutationBody = BodyType<PickupRequestStatusUpdate>
+    export type UpdateWasteRequestStatusMutationError = ErrorType<ErrorResponse>
+    export type UpdateWasteRequestStatusMutationVariables = {requestId: string;data: BodyType<PickupRequestStatusUpdate>}
+
+    /**
+ * @summary Update the status of a pickup request
+ */
+export const useUpdateWasteRequestStatus = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateWasteRequestStatus>>, TError,UpdateWasteRequestStatusMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateWasteRequestStatus>>,
+        TError,
+        UpdateWasteRequestStatusMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateWasteRequestStatusMutationOptions(options));
     }
 

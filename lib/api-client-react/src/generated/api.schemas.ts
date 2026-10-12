@@ -95,3 +95,96 @@ export interface ErrorResponse {
   error: string;
 }
 
+export type WasteCategory = typeof WasteCategory[keyof typeof WasteCategory];
+
+
+export const WasteCategory = {
+  Plastic: 'Plastic',
+  Paper: 'Paper',
+  Cardboard: 'Cardboard',
+  Metal: 'Metal',
+  Glass: 'Glass',
+  'E-waste': 'E-waste',
+  Organic_waste: 'Organic waste',
+} as const;
+
+export interface WasteRate {
+  id: string;
+  category: WasteCategory;
+  ratePerKg: number;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface WasteRateInput {
+  category: WasteCategory;
+  /**
+     * @maximum 1000000
+     * @exclusiveMinimum 0
+     */
+  ratePerKg: number;
+}
+
+export interface WasteRateUpdate {
+  /**
+     * @maximum 1000000
+     * @exclusiveMinimum 0
+     */
+  ratePerKg?: number;
+  active?: boolean;
+}
+
+export interface PickupRequestInput {
+  category: WasteCategory;
+  /**
+     * @maximum 1000
+     * @exclusiveMinimum 0
+     */
+  estimatedQuantityKg: number;
+  /**
+     * @minLength 5
+     * @maxLength 500
+     */
+  pickupAddress: string;
+  preferredPickupAt: string;
+  /** @maxLength 1000 */
+  description?: string;
+}
+
+export type PickupRequestStatus = typeof PickupRequestStatus[keyof typeof PickupRequestStatus];
+
+
+export const PickupRequestStatus = {
+  pending: 'pending',
+  accepted: 'accepted',
+  scheduled: 'scheduled',
+  completed: 'completed',
+  cancelled: 'cancelled',
+  rejected: 'rejected',
+} as const;
+
+export interface PickupRequestStatusUpdate {
+  status: PickupRequestStatus;
+}
+
+export interface PickupRequest {
+  id: string;
+  userId: string;
+  /** @nullable */
+  userName: string | null;
+  /** @nullable */
+  userEmail: string | null;
+  category: WasteCategory;
+  estimatedQuantityKg: number;
+  pickupAddress: string;
+  preferredPickupAt: string;
+  /** @nullable */
+  description: string | null;
+  ratePerKg: number;
+  estimatedValue: number;
+  status: PickupRequestStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+

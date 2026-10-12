@@ -12,6 +12,10 @@ tags:
     description: Health operations
   - name: auth
     description: Account registration, login, profile, and session operations
+  - name: waste
+    description: Waste rates and pickup requests
+  - name: admin
+    description: Administrator management of rates and pickup requests
 paths:
   /healthz:
     get:
@@ -146,6 +150,234 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LogoutResponse"
+  /waste-rates:
+    get:
+      operationId: listActiveWasteRates
+      tags: [waste]
+      summary: List active waste rates for the signed-in user
+      security:
+        - AuthCookie: []
+      responses:
+        "200":
+          description: Active rates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WasteRate"
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /waste-requests:
+    get:
+      operationId: listMyWasteRequests
+      tags: [waste]
+      summary: List pickup requests belonging to the signed-in user
+      security:
+        - AuthCookie: []
+      responses:
+        "200":
+          description: The user's pickup requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PickupRequest"
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: createWasteRequest
+      tags: [waste]
+      summary: Submit a pickup request using the current active rate
+      security:
+        - AuthCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PickupRequestInput"
+      responses:
+        "201":
+          description: Pickup request created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PickupRequest"
+        "400":
+          description: Invalid request details or inactive rate
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /waste-requests/{requestId}:
+    get:
+      operationId: getWasteRequest
+      tags: [waste]
+      summary: View an owned request or one accessible to an administrator
+      security:
+        - AuthCookie: []
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Pickup request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PickupRequest"
+        "403":
+          description: This request belongs to another user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Pickup request not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/waste-rates:
+    get:
+      operationId: listAllWasteRates
+      tags: [admin]
+      summary: List active and inactive rates
+      security:
+        - AuthCookie: []
+      responses:
+        "200":
+          description: All rates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WasteRate"
+    post:
+      operationId: createWasteRate
+      tags: [admin]
+      summary: Create a waste rate
+      security:
+        - AuthCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WasteRateInput"
+      responses:
+        "201":
+          description: Rate created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WasteRate"
+        "409":
+          description: A rate already exists for this category
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/waste-rates/{rateId}:
+    patch:
+      operationId: updateWasteRate
+      tags: [admin]
+      summary: Update the price or active status of a rate
+      security:
+        - AuthCookie: []
+      parameters:
+        - name: rateId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WasteRateUpdate"
+      responses:
+        "200":
+          description: Rate updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WasteRate"
+        "404":
+          description: Rate not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/waste-requests:
+    get:
+      operationId: listAllWasteRequests
+      tags: [admin]
+      summary: List pickup requests for administration
+      security:
+        - AuthCookie: []
+      responses:
+        "200":
+          description: All pickup requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PickupRequest"
+  /admin/waste-requests/{requestId}:
+    patch:
+      operationId: updateWasteRequestStatus
+      tags: [admin]
+      summary: Update the status of a pickup request
+      security:
+        - AuthCookie: []
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PickupRequestStatusUpdate"
+      responses:
+        "200":
+          description: Pickup request updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PickupRequest"
+        "404":
+          description: Pickup request not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   securitySchemes:
     AuthCookie:
@@ -247,4 +479,122 @@ components:
         error:
           type: string
       required: [error]
+    WasteCategory:
+      type: string
+      enum: [Plastic, Paper, Cardboard, Metal, Glass, E-waste, Organic waste]
+    WasteRate:
+      type: object
+      properties:
+        id:
+          type: string
+        category:
+          $ref: "#/components/schemas/WasteCategory"
+        ratePerKg:
+          type: number
+        active:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required: [id, category, ratePerKg, active, createdAt, updatedAt]
+    WasteRateInput:
+      type: object
+      properties:
+        category:
+          $ref: "#/components/schemas/WasteCategory"
+        ratePerKg:
+          type: number
+          exclusiveMinimum: 0
+          maximum: 1000000
+      required: [category, ratePerKg]
+    WasteRateUpdate:
+      type: object
+      properties:
+        ratePerKg:
+          type: number
+          exclusiveMinimum: 0
+          maximum: 1000000
+        active:
+          type: boolean
+    PickupRequestInput:
+      type: object
+      properties:
+        category:
+          $ref: "#/components/schemas/WasteCategory"
+        estimatedQuantityKg:
+          type: number
+          exclusiveMinimum: 0
+          maximum: 1000
+        pickupAddress:
+          type: string
+          minLength: 5
+          maxLength: 500
+        preferredPickupAt:
+          type: string
+          format: date-time
+        description:
+          type: string
+          maxLength: 1000
+      required: [category, estimatedQuantityKg, pickupAddress, preferredPickupAt]
+    PickupRequestStatus:
+      type: string
+      enum: [pending, accepted, scheduled, completed, cancelled, rejected]
+    PickupRequestStatusUpdate:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/PickupRequestStatus"
+      required: [status]
+    PickupRequest:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        userName:
+          type: ["string", "null"]
+        userEmail:
+          type: ["string", "null"]
+        category:
+          $ref: "#/components/schemas/WasteCategory"
+        estimatedQuantityKg:
+          type: number
+        pickupAddress:
+          type: string
+        preferredPickupAt:
+          type: string
+          format: date-time
+        description:
+          type: ["string", "null"]
+        ratePerKg:
+          type: number
+        estimatedValue:
+          type: number
+        status:
+          $ref: "#/components/schemas/PickupRequestStatus"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - userId
+        - userName
+        - userEmail
+        - category
+        - estimatedQuantityKg
+        - pickupAddress
+        - preferredPickupAt
+        - description
+        - ratePerKg
+        - estimatedValue
+        - status
+        - createdAt
+        - updatedAt
 
