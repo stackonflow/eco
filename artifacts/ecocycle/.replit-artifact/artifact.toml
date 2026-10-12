@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "EcoCycle"
+description = "A waste-to-wealth platform where households schedule recycling pickups, collectors verify materials, and recycling partners purchase sorted inventory."
+version = "1.0.0"
+id = "artifacts/ecocycle"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21224
+
+[services.development]
+run = "pnpm --filter @workspace/ecocycle run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/ecocycle", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/ecocycle/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21224"
+BASE_PATH = "/"
