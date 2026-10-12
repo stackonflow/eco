@@ -1,6 +1,6 @@
-import { getListAllWasteRatesQueryKey, getListAllWasteRequestsQueryKey, getListActiveWasteRatesQueryKey, useGetCurrentUser, useListAllWasteRates, useCreateWasteRate, useUpdateWasteRate, useListAllWasteRequests, useUpdateWasteRequestStatus, type WasteCategory, type WasteRate } from '@workspace/api-client-react';
+import { getListAllWasteRatesQueryKey, getListAllWasteRequestsQueryKey, getListActiveWasteRatesQueryKey, getListCollectorsQueryKey, getListAllReceiptsQueryKey, getListInventoryBatchesQueryKey, useGetCurrentUser, useListAllWasteRates, useCreateWasteRate, useUpdateWasteRate, useListAllWasteRequests, useUpdateWasteRequestStatus, useListCollectors, useAssignCollector, useSchedulePickup, useListAllReceipts, useListInventoryBatches, type WasteCategory, type WasteRate } from '@workspace/api-client-react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Check, LoaderCircle, Plus, RefreshCw, ShieldAlert, SlidersHorizontal, Truck, X } from 'lucide-react';
+import { Check, LoaderCircle, Plus, RefreshCw, ShieldAlert, SlidersHorizontal, Truck, X, CalendarDays, Boxes, FileText } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { Link } from 'wouter';
 import { SiteHeader } from '../components/SiteHeader';
@@ -19,6 +19,11 @@ export default function Admin() {
   const createRate = useCreateWasteRate();
   const updateRate = useUpdateWasteRate();
   const updateRequest = useUpdateWasteRequestStatus();
+  const collectors = useListCollectors({ query: { enabled: isAdmin, queryKey: getListCollectorsQueryKey() } });
+  const allReceipts = useListAllReceipts({ query: { enabled: isAdmin, queryKey: getListAllReceiptsQueryKey() } });
+  const inventory = useListInventoryBatches({ query: { enabled: isAdmin, queryKey: getListInventoryBatchesQueryKey() } });
+  const assign = useAssignCollector();
+  const schedule = useSchedulePickup();
   const client = useQueryClient();
   const [category, setCategory] = useState<WasteCategory>('Plastic');
   const [price, setPrice] = useState('');
@@ -27,6 +32,8 @@ export default function Admin() {
   const [notice, setNotice] = useState('');
   const [error, setError] = useState('');
   const [busyId, setBusyId] = useState('');
+  const [collectorIds, setCollectorIds] = useState<Record<string, string>>({});
+  const [scheduleDates, setScheduleDates] = useState<Record<string, string>>({});
 
   const refreshRates = async () => {
     await Promise.all([
@@ -63,6 +70,18 @@ export default function Admin() {
       onError: (e) => { setBusyId(''); setError(errText(e)); },
     });
   }
+  function assignTo(requestId: string) {
+    const collectorId = collectorIds[requestId];
+    if (!collectorId) { setError('Select a collector before assigning this pickup.'); return; }
+    setBusyId(requestId); setError(''); setNotice('');
+    assign.mutate({ requestId, data: { collectorId } }, { onSuccess: async () => { setBusyId(''); setNotice('Collector assigned.'); await Promise.all([client.invalidateQueries({ queryKey: getListAllWasteRequestsQueryKey() }), client.invalidateQueries({ queryKey: getListCollectorAssignmentsQueryKey() })]); }, onError: (e) => { setBusyId(''); setError(errText(e)); } });
+  }
+  function scheduleFor(requestId: string) {
+    const date = scheduleDates[requestId];
+    if (!date) { setError('Choose a pickup date and time before scheduling.'); return; }
+    setBusyId(requestId); setError(''); setNotice('');
+    schedule.mutate({ requestId, data: { scheduledAt: new Date(date).toISOString() } }, { onSuccess: async () => { setBusyId(''); setNotice('Pickup time saved.'); await Promise.all([client.invalidateQueries({ queryKey: getListAllWasteRequestsQueryKey() }), client.invalidateQueries({ queryKey: getListCollectorAssignmentsQueryKey() })]); }, onError: (e) => { setBusyId(''); setError(errText(e)); } });
+  }
 
   return <div className="min-h-[100dvh]"><SiteHeader /><main className="site-shell min-h-[70vh] py-12 sm:py-16">
     {account.isLoading ? <div className="surface animate-pulse rounded-lg p-8"><div className="h-7 w-52 rounded bg-[#dfe7dc]" /><div className="mt-6 h-40 rounded bg-[#e9eee5]" /></div>
@@ -95,7 +114,22 @@ export default function Admin() {
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start"><div><div className="flex flex-wrap items-center gap-3"><h3 className="text-lg font-semibold text-[#20382b]">{request.category} · {request.estimatedQuantityKg} kg</h3><span className="status-pill">{request.status}</span></div><p className="mt-2 text-sm text-[#52695a]">{request.userName || 'Household'} {request.userEmail ? `· ${request.userEmail}` : ''}</p><p className="mt-1 text-sm text-[#617267]">{request.pickupAddress}</p><p className="mt-1 text-xs text-[#738276]">Preferred: {dateLabel(request.preferredPickupAt)} · Estimate ${Number(request.estimatedValue).toFixed(2)}</p>{request.description && <p className="mt-2 text-sm text-[#617267]">{request.description}</p>}</div>
             <label className="w-full sm:w-48"><span className="field-label">Update status</span><select className="field" value={request.status} disabled={busyId === request.id} onChange={(e) => changeStatus(request.id, e.target.value as typeof states[number])}>{states.map((status) => <option key={status} value={status}>{status.charAt(0).toUpperCase() + status.slice(1)}</option>)}</select></label>
           </div>
+          <div className="mt-5 grid gap-3 border-t border-[#e0e5dc] pt-4 md:grid-cols-[1fr_1fr_auto] md:items-end">
+            <label><span className="field-label">Assign collector</span><select className="field" value={collectorIds[request.id] ?? request.assignedCollector?.id ?? ''} onChange={(e) => setCollectorIds((state) => ({ ...state, [request.id]: e.target.value }))}><option value="">Choose a collector</option>{(collectors.data ?? []).map((collector) => <option key={collector.id} value={collector.id}>{collector.name} · {collector.email}</option>)}</select></label>
+            <label><span className="field-label">Schedule pickup</span><input className="field" type="datetime-local" min={new Date().toISOString().slice(0, 16)} value={scheduleDates[request.id] ?? ''} onChange={(e) => setScheduleDates((state) => ({ ...state, [request.id]: e.target.value }))} /></label>
+            <div className="flex flex-wrap gap-2"><button className="button-secondary !min-h-11 !px-3 text-xs" disabled={busyId === request.id || collectors.isLoading || collectors.isError || !(collectorIds[request.id] ?? request.assignedCollector?.id)} onClick={() => assignTo(request.id)}><Truck size={14} /> Assign</button><button className="button-primary !min-h-11 !px-3 text-xs" disabled={busyId === request.id || !scheduleDates[request.id]} onClick={() => scheduleFor(request.id)}><CalendarDays size={14} /> Save time</button></div>
+          </div>
         </article>)}</div>}
+      </section>
+      <section className="mt-10 grid gap-6 lg:grid-cols-2">
+        <div><div className="mb-4 flex items-center gap-3"><span className="grid size-10 place-items-center bg-[#e7eee3] text-[#477956]"><FileText size={18} /></span><div><h2 className="text-2xl font-semibold text-[#20382b]">Receipts</h2><p className="text-sm text-[#617267]">Latest verified-value records.</p></div></div>
+          {allReceipts.isLoading ? <div className="surface animate-pulse rounded-lg p-6"><div className="h-16 rounded bg-[#e9eee5]" /></div> : allReceipts.isError ? <div role="alert" className="surface rounded-lg p-5 text-sm">Receipts unavailable. <button className="underline" onClick={() => void allReceipts.refetch()}>Retry</button></div> : !allReceipts.data?.length ? <div className="surface rounded-lg p-5 text-sm text-[#617267]">No verified receipts yet.</div> : <div className="space-y-2">{allReceipts.data.slice(0, 5).map((receipt) => <article key={receipt.id} className="surface flex justify-between gap-3 rounded-lg p-4"><div><p className="font-mono text-xs text-[#718373]">{receipt.receiptNumber}</p><p className="mt-1 text-sm font-semibold text-[#20382b]">{receipt.category} · {receipt.userName}</p></div><span className="font-semibold text-[#31583c]">${Number(receipt.finalAmount).toFixed(2)}</span></article>)}</div>}
+          <Link href="/receipts" className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-[#31583c]">Open receipts <ArrowRight size={14} /></Link>
+        </div>
+        <div><div className="mb-4 flex items-center gap-3"><span className="grid size-10 place-items-center bg-[#e7eee3] text-[#477956]"><Boxes size={18} /></span><div><h2 className="text-2xl font-semibold text-[#20382b]">Inventory batches</h2><p className="text-sm text-[#617267]">Material entered by verified pickups.</p></div></div>
+          {inventory.isLoading ? <div className="surface animate-pulse rounded-lg p-6"><div className="h-16 rounded bg-[#e9eee5]" /></div> : inventory.isError ? <div role="alert" className="surface rounded-lg p-5 text-sm">Inventory unavailable. <button className="underline" onClick={() => void inventory.refetch()}>Retry</button></div> : !inventory.data?.length ? <div className="surface rounded-lg p-5 text-sm text-[#617267]">No inventory batches yet.</div> : <div className="space-y-2">{inventory.data.slice(0, 5).map((batch) => <article key={batch.id} className="surface flex justify-between gap-3 rounded-lg p-4"><div><p className="font-mono text-xs text-[#718373]">{batch.batchCode}</p><p className="mt-1 text-sm font-semibold text-[#20382b]">{batch.category} · {batch.processingStatus.replaceAll('_', ' ')}</p></div><span className="text-sm text-[#52695a]">{batch.availableQuantityKg} kg available</span></article>)}</div>}
+          <Link href="/inventory" className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-[#31583c]">Manage inventory <ArrowRight size={14} /></Link>
+        </div>
       </section>
     </>}
   </main><SiteFooter /></div>;

@@ -1,0 +1,582 @@
+# EcoCycle — Continue Existing Project: UI Redesign + Phase 2 + Phase 3
+
+Act as a senior MERN stack developer, software architect, and professional UI/UX designer.
+
+Continue working on my existing **EcoCycle — Waste to Wealth Conversion Platform** from the current imported GitHub repository and latest checkpoint.
+
+**Do not rebuild the project from scratch. Do not replace working code unnecessarily. Inspect the existing codebase, preserve completed functionality, and implement the remaining features in place.**
+
+My goal is to finish the professional UI redesign and implement Phase 2 and Phase 3 end-to-end, using real MongoDB data.
+
+---
+
+# 1. Existing Project
+
+The application uses:
+
+- React + Vite
+- Node.js + Express.js
+- MongoDB + Mongoose
+- JWT authentication
+- bcrypt password hashing
+- REST APIs
+- CSS
+
+The previous agents reported that:
+
+- Registration, login, profile updates, and logout had previously passed tests against MongoDB Atlas.
+- The project has an existing authentication system and administrator-seeding mechanism.
+- The frontend has a partially implemented forest-green and warm-neutral design.
+- Some pages still contain older dark-blue and neon styling.
+- The landing page previously had contrast and layout problems.
+- The backend did not yet contain all waste-rate, pickup-request, collection, verification, receipt, and inventory functionality.
+- The imported Replit workspace previously lacked `MONGODB_URI` and `JWT_SECRET`.
+
+These are historical findings, not guaranteed current facts. Inspect the actual project before changing anything.
+
+If some requested features are already implemented, preserve and improve them instead of creating duplicates.
+
+# 2. Phase Zero — Inspect and Stabilize
+
+Before implementing features:
+
+1. Inspect the repository structure and current Git changes.
+2. Review root and workspace package files, lockfiles, and Replit run configuration.
+3. Inspect frontend pages, styles, authentication, routes, controllers, middleware, and Mongoose models.
+4. Check MongoDB connection configuration and available Replit Secrets.
+5. Run the application and diagnose actual startup errors.
+6. Identify which features work, which are incomplete, and which are missing.
+
+Fix dependency or startup issues using the existing package manager and lockfile. Avoid unnecessary dependency upgrades, lockfile deletion, broad rewrites, and unrelated changes.
+
+Preserve existing authentication and API contracts wherever possible.
+
+# 3. UI Redesign — Complete Before Adding Features
+
+I want a professional, carefully designed sustainability platform, not a generic AI-generated or "vibe-coded" interface.
+
+Use the clinic website screenshot I previously provided as inspiration for composition, typography, whitespace, and visual hierarchy. Do not copy its branding or content.
+
+## Design system
+
+Use:
+- Deep forest green for primary branding and actions.
+- Muted emerald accents.
+- Warm off-white and neutral backgrounds.
+- Dark, readable headings.
+- Soft sage secondary surfaces.
+- Restrained shadows and borders.
+- Consistent typography, spacing, buttons, forms, and icons.
+
+Avoid:
+- Excessive neon or glowing borders.
+- Blue-purple gradients everywhere.
+- Unnecessary glassmorphism.
+- Oversized rounded cards for every section.
+- Repetitive card grids.
+- Random floating decorations.
+- Excessive animations.
+- Fake statistics, testimonials, or environmental claims.
+- Emoji replacing a coherent icon system.
+
+## Fix the known landing-page issues
+
+The previous preview showed a nearly invisible headline, pale supporting text, oversized typography, an unbalanced hero, and a recycling illustration that dominated the content.
+
+Fix the contrast, typography, proportions, and spacing.
+
+Keep the headline:
+
+**Turn Your Waste Into Wealth.**
+
+Refine the landing page with:
+- Navbar and EcoCycle branding.
+- Hero headline and relevant recycling imagery.
+- Primary CTA: "Schedule a Pickup".
+- Secondary CTA: "Explore How It Works".
+- How EcoCycle Works section.
+- Waste categories.
+- Platform benefits.
+- Final CTA and footer.
+
+Bring registration, login, profile, and dashboard screens into the same design system.
+
+Use actual data for numerical metrics. Do not invent platform statistics.
+
+Verify that the existing authentication flows still work after the redesign.
+
+# 4. Phase 2 — Waste Submissions and Rate Management
+
+Implement this phase end-to-end before moving into collector workflows.
+
+## 4.1 Waste categories
+
+Support:
+- Plastic
+- Paper
+- Cardboard
+- Metal
+- Glass
+- E-waste
+- Organic waste
+
+Use consistent category identifiers across the frontend, backend, and database.
+
+## 4.2 WasteRate model
+
+Create or update a Mongoose model containing:
+- Category.
+- Rate per kilogram.
+- Active/inactive status.
+- Created and updated timestamps.
+
+Validate rates and prevent conflicting active rate definitions for the same category.
+
+Only administrators can create, edit, activate, or deactivate rates.
+
+## 4.3 Waste submission form
+
+Create a responsive form with:
+- Waste category.
+- Estimated quantity in kilograms.
+- Pickup address.
+- Preferred pickup date and time.
+- Optional description.
+- Optional image upload only if the existing infrastructure supports it safely.
+
+Validate required fields, positive quantities, sensible limits, and valid future dates where applicable.
+
+Display the current active rate and calculate:
+
+`Estimated Value = Estimated Quantity (kg) × Current Rate per kg`
+
+Clearly label the value as an estimate rather than a guaranteed payout.
+
+The frontend may show a live estimate, but the backend must independently retrieve the active rate and calculate the authoritative value.
+
+## 4.4 PickupRequest model
+
+Create or update a model containing:
+- User reference.
+- Waste category.
+- Estimated quantity.
+- Pickup address.
+- Preferred date and time.
+- Optional description.
+- Rate snapshot.
+- Estimated value.
+- Request status.
+- Assigned collector reference, when assigned.
+- Collection and verification timestamps, where applicable.
+- Created and updated timestamps.
+
+Use the existing user model and reference structure.
+
+Historical requests must retain their original rate and estimated value if the current rate changes.
+
+## 4.5 Phase 2 APIs
+
+Implement or extend endpoints for:
+- Listing active rates.
+- Creating waste submissions.
+- Listing the authenticated user's requests.
+- Retrieving a request with ownership checks.
+- Admin listing and management of requests.
+- Admin creation, editing, and activation/deactivation of rates.
+
+Use authentication, validation, role-based authorization, appropriate HTTP status codes, consistent responses, and centralized error handling.
+
+Users must only access their own requests. Admins may manage all requests.
+
+## 4.6 Phase 2 pages
+
+Create or refine:
+
+**Submit Waste**
+- Category selection.
+- Quantity input.
+- Address and preferred pickup details.
+- Dynamic estimate.
+- Validation and success/error feedback.
+
+**My Waste Requests**
+- Category.
+- Estimated quantity.
+- Rate per kilogram.
+- Estimated value.
+- Submission date.
+- Status.
+
+**Admin Waste Rate Management**
+- View rates.
+- Create and edit rates.
+- Activate and deactivate rates.
+
+**Admin Waste Request Management**
+- View all requests.
+- Search and filter.
+- View submission details.
+- Inspect status and estimated values.
+
+All data must come from MongoDB, not hardcoded frontend arrays.
+
+# 5. Phase 3 — Pickup Scheduling, Collection, Verification, Receipts, and Inventory
+
+After Phase 2 is implemented, connect it to a complete collection workflow.
+
+## 5.1 Pickup assignment and scheduling
+
+Extend the existing request workflow to support:
+- Pending.
+- Accepted.
+- Scheduled.
+- Collected.
+- Verified.
+- Completed.
+- Cancelled or rejected where appropriate.
+
+Use valid state transitions and enforce them on the backend.
+
+Administrators should be able to assign an authorized collector to a request and set or update its scheduled collection time.
+
+Collectors should only be able to view and manage requests assigned to them, unless the existing permission model explicitly grants broader access.
+
+Users should be able to view:
+- Current request status.
+- Scheduled collection date and time.
+- Assigned collector information where appropriate.
+- Status history or important updates.
+
+Prevent unauthorized status changes and duplicate assignments.
+
+## 5.2 Collector dashboard
+
+Create a collector dashboard matching the existing EcoCycle design.
+
+Include:
+- Assigned pickups.
+- Upcoming collections.
+- Pending tasks.
+- Pickup addresses.
+- Waste categories and estimated quantities.
+- Scheduled times.
+- Current statuses.
+
+Allow collectors to open a request, review its details, and update its status only through valid workflow transitions.
+
+Provide clear empty, loading, success, and error states.
+
+Do not allow collectors to modify waste rates or unrelated users' requests.
+
+## 5.3 Actual weight and quality verification
+
+After a collector marks a request as collected, allow authorized verification.
+
+Record:
+- Actual measured weight in kilograms.
+- Material quality or condition.
+- Approved final rate per kilogram.
+- Verification notes.
+- Collector identity.
+- Verification timestamp.
+
+Calculate:
+
+`Final Payable Amount = Verified Weight (kg) × Approved Final Rate per kg`
+
+The backend must validate and calculate the final amount.
+
+Do not trust a final amount supplied by the frontend.
+
+Keep estimated values separate from verified values. Preserve the original estimate and rate snapshot.
+
+Only authorized collectors assigned to the request or authorized administrators should be able to perform verification.
+
+Prevent unauthorized changes to completed verification records. If corrections are necessary, record them through an explicit authorized correction process.
+
+## 5.4 Digital receipts
+
+Generate a unique digital receipt once the waste has been successfully verified.
+
+Each receipt should contain:
+- Unique receipt number.
+- Pickup request ID.
+- User details.
+- Waste category.
+- Estimated quantity and value.
+- Actual verified weight.
+- Final approved rate per kilogram.
+- Final payable amount.
+- Collection date.
+- Verification date.
+- Payment status.
+
+Store receipts in MongoDB or generate them from immutable, persisted verification data with a stable unique receipt identifier.
+
+Users should be able to view their own receipts and print or download them.
+
+Administrators should be able to view receipts for authorized operational purposes.
+
+Do not generate multiple inconsistent receipts for the same completed verification.
+
+## 5.5 Inventory batches
+
+After successful verification, create an inventory batch representing the collected waste.
+
+Each batch should include:
+- Unique batch ID.
+- Waste category.
+- Verified quantity.
+- Available quantity.
+- Reserved quantity, initially zero.
+- Quality classification.
+- Source pickup request.
+- Collection date.
+- Processing status.
+- Storage location if applicable.
+- Created and updated timestamps.
+
+Prevent duplicate inventory creation when the same pickup request is retried or processed more than once.
+
+Ensure that the batch quantity is consistent with the verified collection record.
+
+## 5.6 Inventory tracking and QR codes
+
+Generate a unique QR code for each inventory batch.
+
+The QR code should identify the batch and link to a suitable batch-detail route.
+
+Apply access controls to sensitive batch information. Public QR views, if supported, must not reveal private user information or internal financial details.
+
+Create an inventory management page for administrators showing:
+- Batch ID.
+- Waste category.
+- Verified quantity.
+- Available quantity.
+- Reserved quantity.
+- Quality.
+- Processing status.
+- Collection date.
+
+Track inventory status changes and prevent quantities from becoming negative.
+
+Do not implement recycler sales or inventory reservation for actual sales in this phase; those belong to Phase 4.
+
+## 5.7 Processing status
+
+Allow administrators to update material processing statuses, such as:
+- Collected.
+- Sorted.
+- Stored.
+- Sent for processing.
+- Processed.
+
+Use appropriate processing destinations:
+- Suitable recycling facilities for plastic, paper, cardboard, metal, and glass.
+- Authorized facilities for e-waste.
+- Suitable composting or biogas facilities for organic waste.
+
+Do not claim that EcoCycle physically processes materials itself unless the application actually supports that operation.
+
+## 5.8 Phase 3 APIs
+
+Implement or extend backend endpoints for:
+- Assigning collectors.
+- Scheduling pickups.
+- Retrieving collector assignments.
+- Updating pickup status.
+- Recording weight and quality verification.
+- Retrieving user receipts.
+- Retrieving authorized receipt details.
+- Creating and listing inventory batches.
+- Retrieving batch details.
+- Generating and resolving QR-code identifiers.
+- Updating processing status.
+
+Use the existing route structure where reasonable.
+
+Every endpoint must enforce authentication, role permissions, request ownership, valid state transitions, and input validation.
+
+Use transactions or safe atomic operations where appropriate to avoid duplicate receipts and inventory batches.
+
+## 5.9 Phase 3 pages
+
+Implement or refine:
+
+**User Dashboard**
+- Request tracking.
+- Scheduled pickup details.
+- Verification results.
+- Digital receipts.
+- Collection history.
+
+**Collector Dashboard**
+- Assigned requests.
+- Scheduling information.
+- Pickup status updates.
+- Weight and quality verification.
+
+**Admin Collection Management**
+- Request assignment.
+- Schedule management.
+- Verification overview.
+- Status management.
+
+**Inventory Management**
+- Batch records.
+- Quantities.
+- Quality and processing status.
+- QR-code access.
+
+All pages must use actual backend data and the same EcoCycle design system.
+
+# 6. Database and Financial Integrity
+
+Create or update Mongoose models as required for:
+- WasteRate.
+- PickupRequest.
+- Receipt.
+- InventoryBatch.
+- Any necessary status-history or inventory-transaction model.
+
+Reuse the existing User model and authentication architecture.
+
+Use schema validation, timestamps, appropriate indexes, and unique identifiers.
+
+Enforce these invariants:
+- Users cannot access another user's private requests or receipts.
+- Collectors cannot update requests they are not authorized to manage.
+- Only administrators can manage rates and assign collectors.
+- The backend calculates all estimates and final amounts.
+- The same pickup cannot create duplicate receipts or inventory batches.
+- Verified quantities cannot produce negative inventory.
+- Historical estimates remain unchanged when current rates change.
+- Invalid state transitions are rejected.
+- Completed financial and verification records cannot be silently rewritten.
+
+Use MongoDB transactions when supported by the configured deployment and required by the operation. If transactions are unavailable, use appropriate atomic updates and idempotency protections.
+
+# 7. Secrets and Database Configuration
+
+Check whether the following Replit Secrets are configured:
+- `MONGODB_URI`
+- `JWT_SECRET`
+
+If either is missing, tell me to add it through Replit Secrets. Never ask me to paste credentials into chat.
+
+Read secrets only through backend environment variables.
+
+Never:
+- Hardcode secrets.
+- Print secret values in logs.
+- Commit credentials to GitHub.
+- Expose backend secrets in frontend code.
+- Claim that database persistence works without verification.
+
+If MongoDB connection fails, diagnose the actual cause: missing variables, invalid connection string, credentials, network restrictions, or connection timeout.
+
+Do not repeatedly change Atlas network-access rules without evidence.
+
+# 8. UI and Accessibility
+
+Every Phase 2 and Phase 3 screen must match the professional EcoCycle design system.
+
+Use readable typography, sensible page widths, clear form labels, appropriate tables, restrained styling, and consistent spacing.
+
+Ensure:
+- Responsive desktop, tablet, and mobile layouts.
+- Readable color contrast.
+- Keyboard-accessible controls.
+- Visible focus states.
+- Proper loading and disabled states.
+- Useful empty states.
+- Action confirmation where appropriate.
+- Clear validation and error messages.
+- No broken images or horizontal overflow.
+
+Avoid using a card for every piece of information. Use tables, lists, timelines, and compact summaries where they make the interface clearer.
+
+# 9. Testing Requirements
+
+Run actual tests after implementing each phase.
+
+## Existing application
+- Frontend startup.
+- Backend startup.
+- MongoDB connectivity.
+- Registration.
+- Login.
+- Profile update.
+- Logout.
+
+## Phase 2
+- Active-rate retrieval.
+- Admin rate creation and editing.
+- Unauthorized rate modification rejection.
+- Valid waste submission.
+- Invalid quantity and missing-field rejection.
+- Correct server-side estimate calculations.
+- Rate snapshots.
+- User request ownership restrictions.
+- Persistence after refresh.
+
+## Phase 3
+- Collector assignment and scheduling.
+- Unauthorized collector access rejection.
+- Valid and invalid status transitions.
+- Weight and quality verification.
+- Final payable amount calculations.
+- Receipt creation and retrieval.
+- Prevention of duplicate receipts.
+- Inventory batch creation.
+- Prevention of duplicate batches.
+- QR-code generation and authorized batch lookup.
+- Prevention of negative quantities.
+- Processing status updates.
+
+## UI
+- Landing-page contrast and composition.
+- Authentication pages.
+- User dashboard.
+- Collector dashboard.
+- Admin management pages.
+- Mobile responsiveness.
+- Form validation and feedback.
+
+Do not claim tests passed unless they were actually executed. Clearly distinguish verified behavior from features that could not be tested due to missing secrets or infrastructure.
+
+# 10. Execution Order
+
+Follow this order:
+
+1. Inspect the current repository and checkpoint.
+2. Fix startup and dependency issues.
+3. Finish the professional UI redesign.
+4. Preserve and verify Phase 1 authentication.
+5. Complete Phase 2 waste submissions and rate management.
+6. Complete Phase 3 pickup scheduling and collector workflows.
+7. Implement weight and quality verification.
+8. Implement digital receipts.
+9. Implement inventory batches and QR tracking.
+10. Add processing status management.
+11. Run the complete test suite and inspect the preview.
+12. Report the files changed, features completed, actual test results, and remaining issues.
+
+Do not start Phase 4 recycler matching, sales orders, or payment processing yet.
+
+# 11. Final Report
+
+At the end, report:
+- Startup fixes.
+- UI redesign changes.
+- Phase 2 features implemented.
+- Phase 3 features implemented.
+- Database models and API endpoints added.
+- Files created or modified.
+- Tests executed and actual results.
+- Remaining secrets or configuration requirements.
+- Unresolved errors or incomplete features.
+
+**Final objective:** Deliver a stable, professionally designed EcoCycle application with working authentication, waste submissions, rate management, collector scheduling, verification, digital receipts, and QR-based inventory, all backed by MongoDB and real APIs.
+
+Continue from the existing repository. Preserve completed work. Do not rebuild from scratch, fabricate functionality, or replace real database operations with mock data.

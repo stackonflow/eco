@@ -11,6 +11,9 @@ import Account from '@/pages/Account';
 import SubmitWaste from '@/pages/SubmitWaste';
 import MyRequests from '@/pages/MyRequests';
 import Admin from '@/pages/Admin';
+import Collector from '@/pages/Collector';
+import Receipts from '@/pages/Receipts';
+import Inventory from '@/pages/Inventory';
 import {
   Route,
   Switch,
@@ -40,6 +43,9 @@ function Router() {
         <Route path="/submit-waste" component={SubmitWaste} />
         <Route path="/my-requests" component={MyRequests} />
         <Route path="/admin" component={Admin} />
+        <Route path="/collector" component={Collector} />
+        <Route path="/receipts" component={Receipts} />
+        <Route path="/inventory" component={Inventory} />
         <Route component={NotFound} />
       </Switch>
     </RoutedErrorBoundary>

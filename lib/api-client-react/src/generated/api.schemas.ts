@@ -159,6 +159,8 @@ export const PickupRequestStatus = {
   pending: 'pending',
   accepted: 'accepted',
   scheduled: 'scheduled',
+  collected: 'collected',
+  verified: 'verified',
   completed: 'completed',
   cancelled: 'cancelled',
   rejected: 'rejected',
@@ -166,6 +168,43 @@ export const PickupRequestStatus = {
 
 export interface PickupRequestStatusUpdate {
   status: PickupRequestStatus;
+}
+
+export interface CollectorSummary {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export interface StatusHistoryEntry {
+  status: PickupRequestStatus;
+  /** @nullable */
+  note: string | null;
+  /** @nullable */
+  actorName: string | null;
+  createdAt: string;
+}
+
+export type CollectionQuality = typeof CollectionQuality[keyof typeof CollectionQuality];
+
+
+export const CollectionQuality = {
+  excellent: 'excellent',
+  good: 'good',
+  fair: 'fair',
+  poor: 'poor',
+} as const;
+
+export interface CollectionVerification {
+  actualWeightKg: number;
+  quality: CollectionQuality;
+  ratePerKg: number;
+  finalAmount: number;
+  /** @nullable */
+  notes: string | null;
+  /** @nullable */
+  collectorName: string | null;
+  verifiedAt: string;
 }
 
 export interface PickupRequest {
@@ -184,7 +223,127 @@ export interface PickupRequest {
   ratePerKg: number;
   estimatedValue: number;
   status: PickupRequestStatus;
+  assignedCollector: CollectorSummary | null;
+  /** @nullable */
+  scheduledAt: string | null;
+  statusHistory: StatusHistoryEntry[];
+  verification: CollectionVerification | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface CollectorAssignmentInput {
+  /** @minLength 1 */
+  collectorId: string;
+}
+
+export interface PickupScheduleInput {
+  scheduledAt: string;
+}
+
+export type CollectorStatusInputStatus = typeof CollectorStatusInputStatus[keyof typeof CollectorStatusInputStatus];
+
+
+export const CollectorStatusInputStatus = {
+  collected: 'collected',
+} as const;
+
+export interface CollectorStatusInput {
+  status: CollectorStatusInputStatus;
+}
+
+export interface CollectionVerificationInput {
+  /**
+     * @maximum 100000
+     * @exclusiveMinimum 0
+     */
+  actualWeightKg: number;
+  quality: CollectionQuality;
+  /**
+     * @maximum 1000000
+     * @exclusiveMinimum 0
+     */
+  ratePerKg: number;
+  /** @maxLength 2000 */
+  notes?: string;
+}
+
+export type ReceiptPaymentStatus = typeof ReceiptPaymentStatus[keyof typeof ReceiptPaymentStatus];
+
+
+export const ReceiptPaymentStatus = {
+  pending: 'pending',
+} as const;
+
+export interface Receipt {
+  id: string;
+  receiptNumber: string;
+  pickupRequestId: string;
+  userName: string;
+  userEmail: string;
+  category: WasteCategory;
+  estimatedQuantityKg: number;
+  estimatedRatePerKg: number;
+  estimatedValue: number;
+  actualWeightKg: number;
+  finalRatePerKg: number;
+  finalAmount: number;
+  collectionDate: string;
+  verificationDate: string;
+  paymentStatus: ReceiptPaymentStatus;
+  createdAt: string;
+}
+
+export type InventoryProcessingStatus = typeof InventoryProcessingStatus[keyof typeof InventoryProcessingStatus];
+
+
+export const InventoryProcessingStatus = {
+  collected: 'collected',
+  sorted: 'sorted',
+  stored: 'stored',
+  sent_for_processing: 'sent_for_processing',
+  processed: 'processed',
+} as const;
+
+export interface InventoryHistoryEntry {
+  status: InventoryProcessingStatus;
+  /** @nullable */
+  actorName: string | null;
+  createdAt: string;
+}
+
+export interface InventoryBatch {
+  id: string;
+  batchCode: string;
+  category: WasteCategory;
+  verifiedQuantityKg: number;
+  availableQuantityKg: number;
+  reservedQuantityKg: number;
+  quality: CollectionQuality;
+  pickupRequestId: string;
+  collectionDate: string;
+  processingStatus: InventoryProcessingStatus;
+  /** @nullable */
+  storageLocation: string | null;
+  qrToken: string;
+  qrUrl: string;
+  statusHistory: InventoryHistoryEntry[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface VerificationResult {
+  request: PickupRequest;
+  receipt: Receipt;
+  batch: InventoryBatch;
+}
+
+export interface InventoryProcessingInput {
+  processingStatus: InventoryProcessingStatus;
+  /**
+     * @maxLength 300
+     * @nullable
+     */
+  storageLocation?: string | null;
 }
 

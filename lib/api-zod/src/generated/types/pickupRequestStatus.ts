@@ -13,6 +13,8 @@ export const PickupRequestStatus = {
   pending: 'pending',
   accepted: 'accepted',
   scheduled: 'scheduled',
+  collected: 'collected',
+  verified: 'verified',
   completed: 'completed',
   cancelled: 'cancelled',
   rejected: 'rejected',

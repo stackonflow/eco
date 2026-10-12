@@ -161,7 +161,28 @@ export const ListMyWasteRequestsResponseItem = zod.object({
   "description": zod.string().nullable(),
   "ratePerKg": zod.number(),
   "estimatedValue": zod.number(),
-  "status": zod.enum(['pending', 'accepted', 'scheduled', 'completed', 'cancelled', 'rejected']),
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "assignedCollector": zod.union([zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string().email()
+}),zod.null()]),
+  "scheduledAt": zod.coerce.date().nullable(),
+  "statusHistory": zod.array(zod.object({
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "note": zod.string().nullable(),
+  "actorName": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})),
+  "verification": zod.union([zod.object({
+  "actualWeightKg": zod.number(),
+  "quality": zod.enum(['excellent', 'good', 'fair', 'poor']),
+  "ratePerKg": zod.number(),
+  "finalAmount": zod.number(),
+  "notes": zod.string().nullable(),
+  "collectorName": zod.string().nullable(),
+  "verifiedAt": zod.coerce.date()
+}),zod.null()]),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
 })
@@ -201,7 +222,28 @@ export const CreateWasteRequestResponse = zod.object({
   "description": zod.string().nullable(),
   "ratePerKg": zod.number(),
   "estimatedValue": zod.number(),
-  "status": zod.enum(['pending', 'accepted', 'scheduled', 'completed', 'cancelled', 'rejected']),
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "assignedCollector": zod.union([zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string().email()
+}),zod.null()]),
+  "scheduledAt": zod.coerce.date().nullable(),
+  "statusHistory": zod.array(zod.object({
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "note": zod.string().nullable(),
+  "actorName": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})),
+  "verification": zod.union([zod.object({
+  "actualWeightKg": zod.number(),
+  "quality": zod.enum(['excellent', 'good', 'fair', 'poor']),
+  "ratePerKg": zod.number(),
+  "finalAmount": zod.number(),
+  "notes": zod.string().nullable(),
+  "collectorName": zod.string().nullable(),
+  "verifiedAt": zod.coerce.date()
+}),zod.null()]),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
 })
@@ -226,7 +268,28 @@ export const GetWasteRequestResponse = zod.object({
   "description": zod.string().nullable(),
   "ratePerKg": zod.number(),
   "estimatedValue": zod.number(),
-  "status": zod.enum(['pending', 'accepted', 'scheduled', 'completed', 'cancelled', 'rejected']),
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "assignedCollector": zod.union([zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string().email()
+}),zod.null()]),
+  "scheduledAt": zod.coerce.date().nullable(),
+  "statusHistory": zod.array(zod.object({
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "note": zod.string().nullable(),
+  "actorName": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})),
+  "verification": zod.union([zod.object({
+  "actualWeightKg": zod.number(),
+  "quality": zod.enum(['excellent', 'good', 'fair', 'poor']),
+  "ratePerKg": zod.number(),
+  "finalAmount": zod.number(),
+  "notes": zod.string().nullable(),
+  "collectorName": zod.string().nullable(),
+  "verifiedAt": zod.coerce.date()
+}),zod.null()]),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
 })
@@ -311,7 +374,28 @@ export const ListAllWasteRequestsResponseItem = zod.object({
   "description": zod.string().nullable(),
   "ratePerKg": zod.number(),
   "estimatedValue": zod.number(),
-  "status": zod.enum(['pending', 'accepted', 'scheduled', 'completed', 'cancelled', 'rejected']),
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "assignedCollector": zod.union([zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string().email()
+}),zod.null()]),
+  "scheduledAt": zod.coerce.date().nullable(),
+  "statusHistory": zod.array(zod.object({
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "note": zod.string().nullable(),
+  "actorName": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})),
+  "verification": zod.union([zod.object({
+  "actualWeightKg": zod.number(),
+  "quality": zod.enum(['excellent', 'good', 'fair', 'poor']),
+  "ratePerKg": zod.number(),
+  "finalAmount": zod.number(),
+  "notes": zod.string().nullable(),
+  "collectorName": zod.string().nullable(),
+  "verifiedAt": zod.coerce.date()
+}),zod.null()]),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
 })
@@ -326,7 +410,7 @@ export const UpdateWasteRequestStatusParams = zod.object({
 })
 
 export const UpdateWasteRequestStatusBody = zod.object({
-  "status": zod.enum(['pending', 'accepted', 'scheduled', 'completed', 'cancelled', 'rejected'])
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected'])
 })
 
 export const UpdateWasteRequestStatusResponse = zod.object({
@@ -341,7 +425,545 @@ export const UpdateWasteRequestStatusResponse = zod.object({
   "description": zod.string().nullable(),
   "ratePerKg": zod.number(),
   "estimatedValue": zod.number(),
-  "status": zod.enum(['pending', 'accepted', 'scheduled', 'completed', 'cancelled', 'rejected']),
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "assignedCollector": zod.union([zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string().email()
+}),zod.null()]),
+  "scheduledAt": zod.coerce.date().nullable(),
+  "statusHistory": zod.array(zod.object({
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "note": zod.string().nullable(),
+  "actorName": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})),
+  "verification": zod.union([zod.object({
+  "actualWeightKg": zod.number(),
+  "quality": zod.enum(['excellent', 'good', 'fair', 'poor']),
+  "ratePerKg": zod.number(),
+  "finalAmount": zod.number(),
+  "notes": zod.string().nullable(),
+  "collectorName": zod.string().nullable(),
+  "verifiedAt": zod.coerce.date()
+}),zod.null()]),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary List authorized collector accounts for assignment
+ */
+export const ListCollectorsResponseItem = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string().email()
+})
+export const ListCollectorsResponse = zod.array(ListCollectorsResponseItem)
+
+
+/**
+ * @summary Assign an authorized collector to a pickup request
+ */
+export const AssignCollectorParams = zod.object({
+  "requestId": zod.coerce.string()
+})
+
+
+
+
+export const AssignCollectorBody = zod.object({
+  "collectorId": zod.string().min(1)
+})
+
+export const AssignCollectorResponse = zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "userName": zod.string().nullable(),
+  "userEmail": zod.string().nullable(),
+  "category": zod.enum(['Plastic', 'Paper', 'Cardboard', 'Metal', 'Glass', 'E-waste', 'Organic waste']),
+  "estimatedQuantityKg": zod.number(),
+  "pickupAddress": zod.string(),
+  "preferredPickupAt": zod.coerce.date(),
+  "description": zod.string().nullable(),
+  "ratePerKg": zod.number(),
+  "estimatedValue": zod.number(),
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "assignedCollector": zod.union([zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string().email()
+}),zod.null()]),
+  "scheduledAt": zod.coerce.date().nullable(),
+  "statusHistory": zod.array(zod.object({
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "note": zod.string().nullable(),
+  "actorName": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})),
+  "verification": zod.union([zod.object({
+  "actualWeightKg": zod.number(),
+  "quality": zod.enum(['excellent', 'good', 'fair', 'poor']),
+  "ratePerKg": zod.number(),
+  "finalAmount": zod.number(),
+  "notes": zod.string().nullable(),
+  "collectorName": zod.string().nullable(),
+  "verifiedAt": zod.coerce.date()
+}),zod.null()]),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Schedule or reschedule an assigned pickup
+ */
+export const SchedulePickupParams = zod.object({
+  "requestId": zod.coerce.string()
+})
+
+export const SchedulePickupBody = zod.object({
+  "scheduledAt": zod.coerce.date()
+})
+
+export const SchedulePickupResponse = zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "userName": zod.string().nullable(),
+  "userEmail": zod.string().nullable(),
+  "category": zod.enum(['Plastic', 'Paper', 'Cardboard', 'Metal', 'Glass', 'E-waste', 'Organic waste']),
+  "estimatedQuantityKg": zod.number(),
+  "pickupAddress": zod.string(),
+  "preferredPickupAt": zod.coerce.date(),
+  "description": zod.string().nullable(),
+  "ratePerKg": zod.number(),
+  "estimatedValue": zod.number(),
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "assignedCollector": zod.union([zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string().email()
+}),zod.null()]),
+  "scheduledAt": zod.coerce.date().nullable(),
+  "statusHistory": zod.array(zod.object({
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "note": zod.string().nullable(),
+  "actorName": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})),
+  "verification": zod.union([zod.object({
+  "actualWeightKg": zod.number(),
+  "quality": zod.enum(['excellent', 'good', 'fair', 'poor']),
+  "ratePerKg": zod.number(),
+  "finalAmount": zod.number(),
+  "notes": zod.string().nullable(),
+  "collectorName": zod.string().nullable(),
+  "verifiedAt": zod.coerce.date()
+}),zod.null()]),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary List pickup requests assigned to the signed-in collector
+ */
+export const ListCollectorAssignmentsResponseItem = zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "userName": zod.string().nullable(),
+  "userEmail": zod.string().nullable(),
+  "category": zod.enum(['Plastic', 'Paper', 'Cardboard', 'Metal', 'Glass', 'E-waste', 'Organic waste']),
+  "estimatedQuantityKg": zod.number(),
+  "pickupAddress": zod.string(),
+  "preferredPickupAt": zod.coerce.date(),
+  "description": zod.string().nullable(),
+  "ratePerKg": zod.number(),
+  "estimatedValue": zod.number(),
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "assignedCollector": zod.union([zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string().email()
+}),zod.null()]),
+  "scheduledAt": zod.coerce.date().nullable(),
+  "statusHistory": zod.array(zod.object({
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "note": zod.string().nullable(),
+  "actorName": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})),
+  "verification": zod.union([zod.object({
+  "actualWeightKg": zod.number(),
+  "quality": zod.enum(['excellent', 'good', 'fair', 'poor']),
+  "ratePerKg": zod.number(),
+  "finalAmount": zod.number(),
+  "notes": zod.string().nullable(),
+  "collectorName": zod.string().nullable(),
+  "verifiedAt": zod.coerce.date()
+}),zod.null()]),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+export const ListCollectorAssignmentsResponse = zod.array(ListCollectorAssignmentsResponseItem)
+
+
+/**
+ * @summary Record collection of a pickup assigned to the collector
+ */
+export const UpdateCollectorPickupStatusParams = zod.object({
+  "requestId": zod.coerce.string()
+})
+
+export const UpdateCollectorPickupStatusBody = zod.object({
+  "status": zod.enum(['collected'])
+})
+
+export const UpdateCollectorPickupStatusResponse = zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "userName": zod.string().nullable(),
+  "userEmail": zod.string().nullable(),
+  "category": zod.enum(['Plastic', 'Paper', 'Cardboard', 'Metal', 'Glass', 'E-waste', 'Organic waste']),
+  "estimatedQuantityKg": zod.number(),
+  "pickupAddress": zod.string(),
+  "preferredPickupAt": zod.coerce.date(),
+  "description": zod.string().nullable(),
+  "ratePerKg": zod.number(),
+  "estimatedValue": zod.number(),
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "assignedCollector": zod.union([zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string().email()
+}),zod.null()]),
+  "scheduledAt": zod.coerce.date().nullable(),
+  "statusHistory": zod.array(zod.object({
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "note": zod.string().nullable(),
+  "actorName": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})),
+  "verification": zod.union([zod.object({
+  "actualWeightKg": zod.number(),
+  "quality": zod.enum(['excellent', 'good', 'fair', 'poor']),
+  "ratePerKg": zod.number(),
+  "finalAmount": zod.number(),
+  "notes": zod.string().nullable(),
+  "collectorName": zod.string().nullable(),
+  "verifiedAt": zod.coerce.date()
+}),zod.null()]),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Record verified weight and quality and create the receipt and inventory batch
+ */
+export const VerifyCollectionParams = zod.object({
+  "requestId": zod.coerce.string()
+})
+
+export const verifyCollectionBodyActualWeightKgExclusiveMin = 0;
+export const verifyCollectionBodyActualWeightKgMax = 100000;
+
+export const verifyCollectionBodyRatePerKgExclusiveMin = 0;
+export const verifyCollectionBodyRatePerKgMax = 1000000;
+
+export const verifyCollectionBodyNotesMax = 2000;
+
+
+
+export const VerifyCollectionBody = zod.object({
+  "actualWeightKg": zod.number().gt(verifyCollectionBodyActualWeightKgExclusiveMin).max(verifyCollectionBodyActualWeightKgMax),
+  "quality": zod.enum(['excellent', 'good', 'fair', 'poor']),
+  "ratePerKg": zod.number().gt(verifyCollectionBodyRatePerKgExclusiveMin).max(verifyCollectionBodyRatePerKgMax),
+  "notes": zod.string().max(verifyCollectionBodyNotesMax).optional()
+})
+
+export const VerifyCollectionResponse = zod.object({
+  "request": zod.object({
+  "id": zod.string(),
+  "userId": zod.string(),
+  "userName": zod.string().nullable(),
+  "userEmail": zod.string().nullable(),
+  "category": zod.enum(['Plastic', 'Paper', 'Cardboard', 'Metal', 'Glass', 'E-waste', 'Organic waste']),
+  "estimatedQuantityKg": zod.number(),
+  "pickupAddress": zod.string(),
+  "preferredPickupAt": zod.coerce.date(),
+  "description": zod.string().nullable(),
+  "ratePerKg": zod.number(),
+  "estimatedValue": zod.number(),
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "assignedCollector": zod.union([zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string().email()
+}),zod.null()]),
+  "scheduledAt": zod.coerce.date().nullable(),
+  "statusHistory": zod.array(zod.object({
+  "status": zod.enum(['pending', 'accepted', 'scheduled', 'collected', 'verified', 'completed', 'cancelled', 'rejected']),
+  "note": zod.string().nullable(),
+  "actorName": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})),
+  "verification": zod.union([zod.object({
+  "actualWeightKg": zod.number(),
+  "quality": zod.enum(['excellent', 'good', 'fair', 'poor']),
+  "ratePerKg": zod.number(),
+  "finalAmount": zod.number(),
+  "notes": zod.string().nullable(),
+  "collectorName": zod.string().nullable(),
+  "verifiedAt": zod.coerce.date()
+}),zod.null()]),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+}),
+  "receipt": zod.object({
+  "id": zod.string(),
+  "receiptNumber": zod.string(),
+  "pickupRequestId": zod.string(),
+  "userName": zod.string(),
+  "userEmail": zod.string().email(),
+  "category": zod.enum(['Plastic', 'Paper', 'Cardboard', 'Metal', 'Glass', 'E-waste', 'Organic waste']),
+  "estimatedQuantityKg": zod.number(),
+  "estimatedRatePerKg": zod.number(),
+  "estimatedValue": zod.number(),
+  "actualWeightKg": zod.number(),
+  "finalRatePerKg": zod.number(),
+  "finalAmount": zod.number(),
+  "collectionDate": zod.coerce.date(),
+  "verificationDate": zod.coerce.date(),
+  "paymentStatus": zod.enum(['pending']),
+  "createdAt": zod.coerce.date()
+}),
+  "batch": zod.object({
+  "id": zod.string(),
+  "batchCode": zod.string(),
+  "category": zod.enum(['Plastic', 'Paper', 'Cardboard', 'Metal', 'Glass', 'E-waste', 'Organic waste']),
+  "verifiedQuantityKg": zod.number(),
+  "availableQuantityKg": zod.number(),
+  "reservedQuantityKg": zod.number(),
+  "quality": zod.enum(['excellent', 'good', 'fair', 'poor']),
+  "pickupRequestId": zod.string(),
+  "collectionDate": zod.coerce.date(),
+  "processingStatus": zod.enum(['collected', 'sorted', 'stored', 'sent_for_processing', 'processed']),
+  "storageLocation": zod.string().nullable(),
+  "qrToken": zod.string(),
+  "qrUrl": zod.string(),
+  "statusHistory": zod.array(zod.object({
+  "status": zod.enum(['collected', 'sorted', 'stored', 'sent_for_processing', 'processed']),
+  "actorName": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+})
+
+
+/**
+ * @summary List digital receipts belonging to the signed-in user
+ */
+export const ListMyReceiptsResponseItem = zod.object({
+  "id": zod.string(),
+  "receiptNumber": zod.string(),
+  "pickupRequestId": zod.string(),
+  "userName": zod.string(),
+  "userEmail": zod.string().email(),
+  "category": zod.enum(['Plastic', 'Paper', 'Cardboard', 'Metal', 'Glass', 'E-waste', 'Organic waste']),
+  "estimatedQuantityKg": zod.number(),
+  "estimatedRatePerKg": zod.number(),
+  "estimatedValue": zod.number(),
+  "actualWeightKg": zod.number(),
+  "finalRatePerKg": zod.number(),
+  "finalAmount": zod.number(),
+  "collectionDate": zod.coerce.date(),
+  "verificationDate": zod.coerce.date(),
+  "paymentStatus": zod.enum(['pending']),
+  "createdAt": zod.coerce.date()
+})
+export const ListMyReceiptsResponse = zod.array(ListMyReceiptsResponseItem)
+
+
+/**
+ * @summary View an owned receipt or one accessible to an administrator
+ */
+export const GetReceiptParams = zod.object({
+  "receiptId": zod.coerce.string()
+})
+
+export const GetReceiptResponse = zod.object({
+  "id": zod.string(),
+  "receiptNumber": zod.string(),
+  "pickupRequestId": zod.string(),
+  "userName": zod.string(),
+  "userEmail": zod.string().email(),
+  "category": zod.enum(['Plastic', 'Paper', 'Cardboard', 'Metal', 'Glass', 'E-waste', 'Organic waste']),
+  "estimatedQuantityKg": zod.number(),
+  "estimatedRatePerKg": zod.number(),
+  "estimatedValue": zod.number(),
+  "actualWeightKg": zod.number(),
+  "finalRatePerKg": zod.number(),
+  "finalAmount": zod.number(),
+  "collectionDate": zod.coerce.date(),
+  "verificationDate": zod.coerce.date(),
+  "paymentStatus": zod.enum(['pending']),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary List digital receipts for operational use
+ */
+export const ListAllReceiptsResponseItem = zod.object({
+  "id": zod.string(),
+  "receiptNumber": zod.string(),
+  "pickupRequestId": zod.string(),
+  "userName": zod.string(),
+  "userEmail": zod.string().email(),
+  "category": zod.enum(['Plastic', 'Paper', 'Cardboard', 'Metal', 'Glass', 'E-waste', 'Organic waste']),
+  "estimatedQuantityKg": zod.number(),
+  "estimatedRatePerKg": zod.number(),
+  "estimatedValue": zod.number(),
+  "actualWeightKg": zod.number(),
+  "finalRatePerKg": zod.number(),
+  "finalAmount": zod.number(),
+  "collectionDate": zod.coerce.date(),
+  "verificationDate": zod.coerce.date(),
+  "paymentStatus": zod.enum(['pending']),
+  "createdAt": zod.coerce.date()
+})
+export const ListAllReceiptsResponse = zod.array(ListAllReceiptsResponseItem)
+
+
+/**
+ * @summary List verified material inventory batches
+ */
+export const ListInventoryBatchesResponseItem = zod.object({
+  "id": zod.string(),
+  "batchCode": zod.string(),
+  "category": zod.enum(['Plastic', 'Paper', 'Cardboard', 'Metal', 'Glass', 'E-waste', 'Organic waste']),
+  "verifiedQuantityKg": zod.number(),
+  "availableQuantityKg": zod.number(),
+  "reservedQuantityKg": zod.number(),
+  "quality": zod.enum(['excellent', 'good', 'fair', 'poor']),
+  "pickupRequestId": zod.string(),
+  "collectionDate": zod.coerce.date(),
+  "processingStatus": zod.enum(['collected', 'sorted', 'stored', 'sent_for_processing', 'processed']),
+  "storageLocation": zod.string().nullable(),
+  "qrToken": zod.string(),
+  "qrUrl": zod.string(),
+  "statusHistory": zod.array(zod.object({
+  "status": zod.enum(['collected', 'sorted', 'stored', 'sent_for_processing', 'processed']),
+  "actorName": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+export const ListInventoryBatchesResponse = zod.array(ListInventoryBatchesResponseItem)
+
+
+/**
+ * @summary Retrieve an inventory batch
+ */
+export const GetInventoryBatchParams = zod.object({
+  "batchId": zod.coerce.string()
+})
+
+export const GetInventoryBatchResponse = zod.object({
+  "id": zod.string(),
+  "batchCode": zod.string(),
+  "category": zod.enum(['Plastic', 'Paper', 'Cardboard', 'Metal', 'Glass', 'E-waste', 'Organic waste']),
+  "verifiedQuantityKg": zod.number(),
+  "availableQuantityKg": zod.number(),
+  "reservedQuantityKg": zod.number(),
+  "quality": zod.enum(['excellent', 'good', 'fair', 'poor']),
+  "pickupRequestId": zod.string(),
+  "collectionDate": zod.coerce.date(),
+  "processingStatus": zod.enum(['collected', 'sorted', 'stored', 'sent_for_processing', 'processed']),
+  "storageLocation": zod.string().nullable(),
+  "qrToken": zod.string(),
+  "qrUrl": zod.string(),
+  "statusHistory": zod.array(zod.object({
+  "status": zod.enum(['collected', 'sorted', 'stored', 'sent_for_processing', 'processed']),
+  "actorName": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Resolve an authorized inventory QR code
+ */
+export const GetInventoryBatchByQrParams = zod.object({
+  "token": zod.coerce.string()
+})
+
+export const GetInventoryBatchByQrResponse = zod.object({
+  "id": zod.string(),
+  "batchCode": zod.string(),
+  "category": zod.enum(['Plastic', 'Paper', 'Cardboard', 'Metal', 'Glass', 'E-waste', 'Organic waste']),
+  "verifiedQuantityKg": zod.number(),
+  "availableQuantityKg": zod.number(),
+  "reservedQuantityKg": zod.number(),
+  "quality": zod.enum(['excellent', 'good', 'fair', 'poor']),
+  "pickupRequestId": zod.string(),
+  "collectionDate": zod.coerce.date(),
+  "processingStatus": zod.enum(['collected', 'sorted', 'stored', 'sent_for_processing', 'processed']),
+  "storageLocation": zod.string().nullable(),
+  "qrToken": zod.string(),
+  "qrUrl": zod.string(),
+  "statusHistory": zod.array(zod.object({
+  "status": zod.enum(['collected', 'sorted', 'stored', 'sent_for_processing', 'processed']),
+  "actorName": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Update the processing status or storage location of a batch
+ */
+export const UpdateInventoryProcessingParams = zod.object({
+  "batchId": zod.coerce.string()
+})
+
+export const updateInventoryProcessingBodyStorageLocationMax = 300;
+
+
+
+export const UpdateInventoryProcessingBody = zod.object({
+  "processingStatus": zod.enum(['collected', 'sorted', 'stored', 'sent_for_processing', 'processed']),
+  "storageLocation": zod.string().max(updateInventoryProcessingBodyStorageLocationMax).nullish()
+})
+
+export const UpdateInventoryProcessingResponse = zod.object({
+  "id": zod.string(),
+  "batchCode": zod.string(),
+  "category": zod.enum(['Plastic', 'Paper', 'Cardboard', 'Metal', 'Glass', 'E-waste', 'Organic waste']),
+  "verifiedQuantityKg": zod.number(),
+  "availableQuantityKg": zod.number(),
+  "reservedQuantityKg": zod.number(),
+  "quality": zod.enum(['excellent', 'good', 'fair', 'poor']),
+  "pickupRequestId": zod.string(),
+  "collectionDate": zod.coerce.date(),
+  "processingStatus": zod.enum(['collected', 'sorted', 'stored', 'sent_for_processing', 'processed']),
+  "storageLocation": zod.string().nullable(),
+  "qrToken": zod.string(),
+  "qrUrl": zod.string(),
+  "statusHistory": zod.array(zod.object({
+  "status": zod.enum(['collected', 'sorted', 'stored', 'sent_for_processing', 'processed']),
+  "actorName": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
 })

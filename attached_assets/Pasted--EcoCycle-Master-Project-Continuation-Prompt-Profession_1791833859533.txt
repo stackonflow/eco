@@ -1,0 +1,577 @@
+# EcoCycle — Master Project Continuation Prompt
+## Professional UI Redesign + MERN Backend + Phase 2 Implementation
+
+Act as a senior full-stack MERN engineer, software architect, and professional product designer.
+
+Continue developing my existing project, **EcoCycle — Waste to Wealth Conversion Platform**, from the current imported GitHub repository and latest checkpoint.
+
+**This is an existing project, not a new project. Do not rebuild it from scratch, replace the architecture unnecessarily, or discard previous work.**
+
+Your responsibility is to inspect the actual codebase, preserve completed functionality, fix outstanding problems, finish the professional UI redesign, and implement Phase 2 end-to-end.
+
+Work incrementally and verify your changes.
+
+---
+
+# 1. Project Overview
+
+EcoCycle is a waste-management and recycling platform designed to connect households, waste collectors, recycling companies, and administrators.
+
+The platform aims to transform recyclable waste into a potential source of income by managing waste submissions, estimated values, collections, material verification, inventory, recycling, sales, and payments.
+
+The application uses the MERN stack:
+
+- **Frontend:** React + Vite
+- **Backend:** Node.js + Express.js
+- **Database:** MongoDB + Mongoose
+- **Authentication:** JWT + bcrypt
+- **Styling:** CSS
+- **API communication:** REST APIs
+- **Validation:** Existing validation framework, or an appropriate library if needed
+
+Use the existing architecture and dependencies wherever possible. Do not introduce Java, Spring Boot, or MySQL.
+
+## Existing development state
+
+The previous agents reported the following:
+
+- The project was imported from a GitHub repository into a new Replit workspace.
+- The application already has a React frontend and Express API backed by MongoDB.
+- Registration, login, profile updates, and logout were previously tested against MongoDB Atlas.
+- The API contains authentication functionality and an administrator-seeding mechanism.
+- The landing page has been partially redesigned with a warm off-white and forest-green visual identity.
+- Some pages still contain older dark-blue and neon styling.
+- The hero headline and supporting text had insufficient contrast in an earlier preview.
+- The imported workspace previously lacked `MONGODB_URI` and `JWT_SECRET`.
+- The backend did not yet contain waste-rate and pickup-request models/routes when the previous agent inspected it.
+- The previous agent began restoring dependencies and inspecting the workspace.
+- Phase 2 was not yet confirmed complete.
+
+**These are reported findings, not guaranteed current facts.** Inspect the actual files, current checkpoint, environment configuration, and runtime logs before deciding what remains to be done.
+
+---
+
+# 2. Phase Zero — Inspect and Stabilize the Existing Project
+
+Before implementing features, inspect the current codebase.
+
+Review:
+
+- Root and workspace `package.json` files.
+- `pnpm-lock.yaml` and workspace configuration, if present.
+- Replit run configuration.
+- Frontend components, pages, and styles.
+- Express server and application setup.
+- Authentication routes and controllers.
+- JWT and session handling.
+- Mongoose models and database connection.
+- Authorization middleware.
+- Admin-seeding mechanism.
+- Existing API contracts.
+- Current changes and Git diff, if available.
+- Latest preview and terminal errors.
+
+Identify what has already been implemented, what is partially implemented, and what is missing.
+
+### Dependency and startup requirements
+
+If the application does not start:
+
+1. Inspect the actual error logs.
+2. Identify the root cause.
+3. Restore dependencies using the existing package manager and lockfile.
+4. Verify Vite, the frontend workspace, and the backend workspace.
+5. Check the Replit run command.
+6. Start the application and inspect the resulting logs.
+
+Do not delete lockfiles or upgrade every dependency without a clear reason. Make the smallest safe changes.
+
+Preserve existing code that is working correctly.
+
+---
+
+# 3. Phase One — Finish the Professional UI Redesign
+
+The first major objective is to make EcoCycle look like a professionally designed product rather than a generic AI-generated template.
+
+Use the previously supplied clinic website screenshot as inspiration for design quality, composition, whitespace, typography, and visual hierarchy.
+
+Do not copy the clinic's branding, text, or medical content.
+
+## 3.1 Visual design system
+
+Use a refined sustainability-focused palette:
+
+- Deep forest green for branding and primary actions.
+- Muted emerald for accents.
+- Warm off-white and neutral backgrounds.
+- Dark charcoal or deep green for headings.
+- Soft sage for secondary surfaces.
+- Restrained shadows and subtle borders.
+
+Maintain consistent typography, spacing, iconography, button styles, input styles, and layout proportions.
+
+Use Lucide icons where appropriate. Use relevant recycling imagery or illustrations.
+
+### Avoid generic "vibe-coded" UI
+
+Do not use:
+
+- Excessive neon colors or glowing borders.
+- Blue-purple gradients on every section.
+- Unnecessary glassmorphism or blur effects.
+- Giant rounded cards for every element.
+- Repetitive card grids throughout the website.
+- Random floating decorations.
+- Excessive animations or hover transformations.
+- Emoji as a replacement for a consistent icon system.
+- Generic dashboard templates without clear information hierarchy.
+- Fabricated testimonials, ratings, or environmental statistics.
+- Decorative elements that reduce readability.
+
+Do not merely change colors on the existing layout. Improve the composition and hierarchy while preserving working functionality.
+
+## 3.2 Fix the known landing-page problems
+
+The previous preview showed:
+
+- The text "Turn Your Waste" was almost invisible because it was white on a light background.
+- Supporting text had insufficient contrast.
+- The hero headline was oversized.
+- The hero layout was unbalanced.
+- The recycling illustration dominated the text.
+- The eyebrow label and platform-status indicator were difficult to read.
+
+Fix all of these issues.
+
+The main headline must remain:
+
+**Turn Your Waste Into Wealth.**
+
+Use dark forest green or charcoal for the main headline, with a restrained emerald accent where appropriate.
+
+Make the supporting text comfortably readable. Balance the headline, description, buttons, and hero illustration.
+
+Keep the design clean, intentional, and responsive.
+
+## 3.3 Landing-page structure
+
+Create or refine these sections:
+
+1. Navbar with EcoCycle branding and navigation.
+2. Hero section with the headline and relevant recycling imagery.
+3. Primary CTA: "Schedule a Pickup".
+4. Secondary CTA: "Explore How It Works".
+5. Trust or benefits section.
+6. Six-step "How EcoCycle Works" section.
+7. Waste categories.
+8. Why EcoCycle.
+9. Final call to action.
+10. Professional footer.
+
+Only display numerical platform metrics when they come from real, reliable data. If no metrics are available, show genuine platform benefits instead.
+
+## 3.4 How EcoCycle Works
+
+Present these six steps clearly:
+
+1. **Register** — Users create an account.
+2. **Submit Waste** — Users select a waste category and estimated quantity.
+3. **Schedule Collection** — Users provide pickup details.
+4. **Verify Waste** — Collectors confirm actual weight and quality.
+5. **Receive Payment** — Payment is calculated using verified weight and approved rates.
+6. **Recycle and Resell** — Suitable materials are routed to recycling or processing partners.
+
+Use a clear editorial layout. Do not turn every section into a collection of oversized glowing cards.
+
+## 3.5 Authenticated pages
+
+Bring the registration, login, profile, and dashboard screens into the same visual design system.
+
+Provide consistent:
+
+- Navigation.
+- Page headings.
+- Form labels.
+- Input styles.
+- Buttons.
+- Validation messages.
+- Loading and disabled states.
+- Empty states.
+- Error feedback.
+- Responsive behavior.
+
+Do not break existing authentication behavior or API contracts.
+
+**Complete and verify the visual redesign before moving on to the Phase 2 feature work.**
+
+---
+
+# 4. Phase Two — Waste Submissions and Rate Management
+
+Once the existing application starts reliably and the UI redesign is complete, implement Phase 2.
+
+Inspect the current codebase first. Reuse existing models, routes, components, and utilities when appropriate.
+
+Do not create duplicate implementations if any of these features already exist.
+
+## 4.1 Waste categories
+
+Support the following categories:
+
+- Plastic
+- Paper
+- Cardboard
+- Metal
+- Glass
+- E-waste
+- Organic waste
+
+Use a consistent set of category identifiers across the frontend, backend, and database.
+
+## 4.2 WasteRate model
+
+Create or update a Mongoose model containing:
+
+- Waste category.
+- Rate per kilogram.
+- Active/inactive status.
+- Created timestamp.
+- Updated timestamp.
+
+Enforce appropriate validation and prevent duplicate active rate definitions for the same category.
+
+Only authorized administrators may create, edit, activate, or deactivate rates.
+
+Use the existing authentication and role system. Do not create a competing authorization mechanism.
+
+## 4.3 Waste submission form
+
+Create a polished, responsive page that allows authenticated users to submit waste collection requests.
+
+Include:
+
+- Waste category.
+- Estimated quantity in kilograms.
+- Pickup address.
+- Preferred pickup date and time.
+- Optional description.
+- Optional image upload only if the existing infrastructure supports it safely.
+
+Validate required fields, positive quantities, reasonable limits, and valid pickup dates.
+
+Show the current active rate for the selected category.
+
+Calculate:
+
+`Estimated Value = Estimated Quantity (kg) × Current Rate per kg`
+
+Display the estimated rate and total clearly. Label the total as an estimate, not a guaranteed payout.
+
+Update the estimate when the selected category, quantity, or active rate changes.
+
+## 4.4 PickupRequest model
+
+Create or update a Mongoose model containing:
+
+- User reference.
+- Waste category.
+- Estimated quantity.
+- Pickup address.
+- Preferred date and time.
+- Optional description.
+- Rate snapshot used for the estimate.
+- Estimated value.
+- Request status.
+- Created timestamp.
+- Updated timestamp.
+
+Use the existing user model and reference structure.
+
+The backend must retrieve the applicable active rate from MongoDB and calculate the estimated value itself.
+
+Never trust a price, estimated total, user ID, or role supplied by the frontend.
+
+Store the rate and estimated value used when the request is created. Historical requests must retain their original rate snapshot even if the administrator later changes the current rate.
+
+Use a sensible initial status, such as `pending`.
+
+Do not implement the full collector scheduling or physical verification workflow in this phase.
+
+## 4.5 Backend APIs
+
+Implement or extend APIs for:
+
+- Listing active waste rates.
+- Creating a waste submission.
+- Listing the authenticated user's own submissions.
+- Retrieving an individual request with ownership checks.
+- Admin listing of all waste requests.
+- Admin creation of waste rates.
+- Admin updating of waste rates.
+- Admin activating and deactivating rates.
+
+Follow the existing route naming conventions where reasonable.
+
+Use:
+
+- Input validation.
+- Authentication middleware.
+- Role-based authorization.
+- Consistent response formats.
+- Appropriate HTTP status codes.
+- Centralized error handling.
+- Ownership checks.
+
+Users must only access their own requests. Administrators may view and manage requests across users.
+
+Ensure that unauthorized requests cannot change rates or access private records.
+
+## 4.6 User-facing pages
+
+Implement or refine:
+
+### Submit Waste
+
+A form for submitting recyclable waste with live estimate calculation, validation, and helpful feedback.
+
+### My Waste Requests
+
+A page showing the authenticated user's actual saved requests.
+
+Display:
+
+- Waste category.
+- Estimated quantity.
+- Rate per kilogram.
+- Estimated value.
+- Submission date.
+- Request status.
+
+Include loading states, empty states, and error handling.
+
+Users should be able to refresh the page without losing access to previously submitted requests.
+
+## 4.7 Admin pages
+
+Implement or refine:
+
+### Waste Rate Management
+
+Administrators can:
+
+- View current rates.
+- Create rates.
+- Edit rates.
+- Activate or deactivate rates.
+
+### Waste Request Management
+
+Administrators can:
+
+- View all requests.
+- Search or filter requests.
+- View request details.
+- Review submission dates, quantities, estimates, and statuses.
+
+Use readable tables and simple forms where appropriate. Do not turn every row or field into a large decorative card.
+
+All administrative permissions must be enforced on the backend.
+
+## 4.8 Database persistence
+
+Persist all waste rates and requests in MongoDB.
+
+Verify that:
+
+- New requests are saved to MongoDB.
+- Users can retrieve their own requests after refreshing.
+- Rates are loaded from the database.
+- Rate changes affect new estimates.
+- Historical requests retain their original rate and estimated value.
+- Inactive rates cannot be used for new requests.
+- Unauthorized users cannot access another user's data.
+- Non-admin users cannot modify rates.
+
+Do not substitute hardcoded arrays or local component state for required database operations.
+
+---
+
+# 5. Secrets and MongoDB Configuration
+
+The imported Replit workspace previously lacked:
+
+- `MONGODB_URI`
+- `JWT_SECRET`
+
+Check whether these secrets are now configured.
+
+If they are missing, tell me to add them through Replit Secrets. Do not ask me to paste credentials into chat.
+
+The backend should read secrets through environment variables, for example:
+
+- `process.env.MONGODB_URI`
+- `process.env.JWT_SECRET`
+
+Never hardcode credentials, print secret values, commit `.env` files, or expose backend secrets to the frontend.
+
+Ensure the backend connects to MongoDB before accepting requests that require database access.
+
+If the connection fails, diagnose the actual error:
+
+- Missing environment variable.
+- Invalid connection string.
+- Invalid database credentials.
+- Atlas network access restrictions.
+- Database connection or timeout issue.
+
+Do not repeatedly change network-access rules without evidence.
+
+Do not claim persistence works unless it has been verified.
+
+---
+
+# 6. Authentication and Security
+
+Preserve the existing Phase 1 authentication system.
+
+Verify:
+
+- Registration.
+- Login.
+- Profile updates.
+- Logout.
+- Session or token invalidation behavior as supported by the current implementation.
+
+Do not change the authentication architecture unnecessarily.
+
+Additional requirements:
+
+- Never store plaintext passwords.
+- Never expose password hashes.
+- Prevent public registration from assigning an administrator role.
+- Use the existing secure administrator-seeding mechanism.
+- Enforce permissions on the backend.
+- Prevent users from reading another user's requests.
+- Prevent non-admins from modifying rates.
+- Validate all incoming data.
+- Use safe error responses.
+- Avoid weakening security controls to make tests pass.
+
+---
+
+# 7. Testing and Verification
+
+Test the actual application after making changes.
+
+## Application startup
+
+- Frontend starts.
+- Backend starts.
+- Vite and workspace dependencies resolve.
+- Replit run configuration works.
+- No new build or runtime errors are introduced.
+
+## Authentication
+
+- Registration.
+- Login.
+- Profile update.
+- Logout.
+- Unauthorized requests.
+
+## Waste rates
+
+- Active rates can be retrieved.
+- Admin can create and update rates.
+- Non-admin rate modifications are rejected.
+- Inactive rates are rejected for new submissions.
+
+## Waste submissions
+
+- Valid requests are saved.
+- Missing required fields are rejected.
+- Invalid quantities are rejected.
+- Estimated-value calculations are correct.
+- Rate snapshots remain consistent.
+- Users cannot access another user's requests.
+- Requests persist after refresh.
+
+## UI
+
+- Headline and body text are readable.
+- Contrast is sufficient.
+- Navigation and buttons work.
+- Forms display appropriate feedback.
+- Layouts work on desktop, tablet, and mobile.
+- No horizontal overflow or broken images.
+
+Do not claim a test passed unless it was actually executed.
+
+If a test cannot run because secrets are missing, identify the exact missing configuration and report the limitation honestly.
+
+---
+
+# 8. Scope Boundaries
+
+Complete only the UI redesign, application stabilization, and Phase 2.
+
+Do not begin these later-phase features yet:
+
+- Collector assignment.
+- Full pickup scheduling workflows.
+- Physical weight and quality verification.
+- Digital receipts.
+- QR-based inventory tracking.
+- Recycling-company matching.
+- Purchase offers.
+- Sales orders.
+- Payment processing.
+- Full financial analytics.
+
+These belong to later development phases.
+
+---
+
+# 9. Working Method
+
+Follow this sequence:
+
+**Step 1:** Inspect the current repository and latest checkpoint.
+
+**Step 2:** Fix dependency or startup problems, if any.
+
+**Step 3:** Finish the UI redesign and correct all contrast and layout problems.
+
+**Step 4:** Verify that existing authentication still works.
+
+**Step 5:** Implement or complete the waste-rate model and APIs.
+
+**Step 6:** Implement or complete waste submission and request history.
+
+**Step 7:** Implement or complete administrator rate and request management.
+
+**Step 8:** Run tests and inspect the actual preview.
+
+**Step 9:** Report the changes, tests, and remaining requirements.
+
+Make incremental changes. Preserve completed work. Avoid unnecessary dependency changes, broad rewrites, duplicate code, and unrelated modifications.
+
+---
+
+# 10. Final Report
+
+At the end, provide:
+
+1. The root cause of any startup problems.
+2. The UI changes completed.
+3. The files created or modified.
+4. The models and API endpoints implemented.
+5. The features that work.
+6. The tests actually executed and their results.
+7. Any remaining secret or database configuration requirements.
+8. Any unresolved errors or incomplete features.
+
+**Final objective:** Continue the existing EcoCycle repository, deliver a professional and readable UI, preserve working authentication, and complete Phase 2 using real MongoDB-backed functionality.
+
+Do not rebuild from scratch. Do not use mock data to simulate success. Do not silently skip unfinished requirements.

@@ -5,7 +5,10 @@
  * EcoCycle API
  * OpenAPI spec version: 0.1.0
  */
+import type { CollectionVerification } from './collectionVerification';
+import type { CollectorSummary } from './collectorSummary';
 import type { PickupRequestStatus } from './pickupRequestStatus';
+import type { StatusHistoryEntry } from './statusHistoryEntry';
 import type { WasteCategory } from './wasteCategory';
 
 export interface PickupRequest {
@@ -24,6 +27,11 @@ export interface PickupRequest {
   ratePerKg: number;
   estimatedValue: number;
   status: PickupRequestStatus;
+  assignedCollector: CollectorSummary | null;
+  /** @nullable */
+  scheduledAt: Date | null;
+  statusHistory: StatusHistoryEntry[];
+  verification: CollectionVerification | null;
   createdAt: Date;
   updatedAt: Date;
 }

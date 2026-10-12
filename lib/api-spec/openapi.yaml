@@ -384,6 +384,276 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /admin/collectors:
+    get:
+      operationId: listCollectors
+      tags: [admin]
+      summary: List authorized collector accounts for assignment
+      security:
+        - AuthCookie: []
+      responses:
+        "200":
+          description: Collector accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CollectorSummary"
+  /admin/waste-requests/{requestId}/assignment:
+    patch:
+      operationId: assignCollector
+      tags: [admin]
+      summary: Assign an authorized collector to a pickup request
+      security:
+        - AuthCookie: []
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CollectorAssignmentInput"
+      responses:
+        "200":
+          description: Assigned pickup request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PickupRequest"
+  /admin/waste-requests/{requestId}/schedule:
+    patch:
+      operationId: schedulePickup
+      tags: [admin]
+      summary: Schedule or reschedule an assigned pickup
+      security:
+        - AuthCookie: []
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PickupScheduleInput"
+      responses:
+        "200":
+          description: Scheduled pickup
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PickupRequest"
+  /collector/assignments:
+    get:
+      operationId: listCollectorAssignments
+      tags: [collector]
+      summary: List pickup requests assigned to the signed-in collector
+      security:
+        - AuthCookie: []
+      responses:
+        "200":
+          description: Assigned pickup requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PickupRequest"
+  /collector/waste-requests/{requestId}/status:
+    patch:
+      operationId: updateCollectorPickupStatus
+      tags: [collector]
+      summary: Record collection of a pickup assigned to the collector
+      security:
+        - AuthCookie: []
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CollectorStatusInput"
+      responses:
+        "200":
+          description: Updated pickup request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PickupRequest"
+  /collector/waste-requests/{requestId}/verification:
+    post:
+      operationId: verifyCollection
+      tags: [collector]
+      summary: Record verified weight and quality and create the receipt and inventory batch
+      security:
+        - AuthCookie: []
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CollectionVerificationInput"
+      responses:
+        "201":
+          description: Verified collection with receipt and inventory batch
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerificationResult"
+  /receipts:
+    get:
+      operationId: listMyReceipts
+      tags: [waste]
+      summary: List digital receipts belonging to the signed-in user
+      security:
+        - AuthCookie: []
+      responses:
+        "200":
+          description: User receipts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Receipt"
+  /receipts/{receiptId}:
+    get:
+      operationId: getReceipt
+      tags: [waste]
+      summary: View an owned receipt or one accessible to an administrator
+      security:
+        - AuthCookie: []
+      parameters:
+        - name: receiptId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Digital receipt
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Receipt"
+  /admin/receipts:
+    get:
+      operationId: listAllReceipts
+      tags: [admin]
+      summary: List digital receipts for operational use
+      security:
+        - AuthCookie: []
+      responses:
+        "200":
+          description: All receipts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Receipt"
+  /admin/inventory:
+    get:
+      operationId: listInventoryBatches
+      tags: [admin]
+      summary: List verified material inventory batches
+      security:
+        - AuthCookie: []
+      responses:
+        "200":
+          description: Inventory batches
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InventoryBatch"
+  /admin/inventory/{batchId}:
+    get:
+      operationId: getInventoryBatch
+      tags: [admin]
+      summary: Retrieve an inventory batch
+      security:
+        - AuthCookie: []
+      parameters:
+        - name: batchId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Inventory batch
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InventoryBatch"
+  /admin/inventory/qr/{token}:
+    get:
+      operationId: getInventoryBatchByQr
+      tags: [admin]
+      summary: Resolve an authorized inventory QR code
+      security:
+        - AuthCookie: []
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Inventory batch
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InventoryBatch"
+  /admin/inventory/{batchId}/processing:
+    patch:
+      operationId: updateInventoryProcessing
+      tags: [admin]
+      summary: Update the processing status or storage location of a batch
+      security:
+        - AuthCookie: []
+      parameters:
+        - name: batchId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InventoryProcessingInput"
+      responses:
+        "200":
+          description: Updated inventory batch
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InventoryBatch"
 components:
   securitySchemes:
     AuthCookie:
@@ -547,7 +817,7 @@ components:
       required: [category, estimatedQuantityKg, pickupAddress, preferredPickupAt]
     PickupRequestStatus:
       type: string
-      enum: [pending, accepted, scheduled, completed, cancelled, rejected]
+      enum: [pending, accepted, scheduled, collected, verified, completed, cancelled, rejected]
     PickupRequestStatusUpdate:
       type: object
       properties:
@@ -582,6 +852,21 @@ components:
           type: number
         status:
           $ref: "#/components/schemas/PickupRequestStatus"
+        assignedCollector:
+          anyOf:
+            - $ref: "#/components/schemas/CollectorSummary"
+            - type: "null"
+        scheduledAt:
+          type: ["string", "null"]
+          format: date-time
+        statusHistory:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatusHistoryEntry"
+        verification:
+          anyOf:
+            - $ref: "#/components/schemas/CollectionVerification"
+            - type: "null"
         createdAt:
           type: string
           format: date-time
@@ -601,6 +886,209 @@ components:
         - ratePerKg
         - estimatedValue
         - status
+        - assignedCollector
+        - scheduledAt
+        - statusHistory
+        - verification
         - createdAt
         - updatedAt
+    CollectorSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+      required: [id, name, email]
+    StatusHistoryEntry:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/PickupRequestStatus"
+        note:
+          type: ["string", "null"]
+        actorName:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+      required: [status, note, actorName, createdAt]
+    CollectorAssignmentInput:
+      type: object
+      properties:
+        collectorId:
+          type: string
+          minLength: 1
+      required: [collectorId]
+    PickupScheduleInput:
+      type: object
+      properties:
+        scheduledAt:
+          type: string
+          format: date-time
+      required: [scheduledAt]
+    CollectorStatusInput:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [collected]
+      required: [status]
+    CollectionQuality:
+      type: string
+      enum: [excellent, good, fair, poor]
+    CollectionVerificationInput:
+      type: object
+      properties:
+        actualWeightKg:
+          type: number
+          exclusiveMinimum: 0
+          maximum: 100000
+        quality:
+          $ref: "#/components/schemas/CollectionQuality"
+        ratePerKg:
+          type: number
+          exclusiveMinimum: 0
+          maximum: 1000000
+        notes:
+          type: string
+          maxLength: 2000
+      required: [actualWeightKg, quality, ratePerKg]
+    CollectionVerification:
+      type: object
+      properties:
+        actualWeightKg:
+          type: number
+        quality:
+          $ref: "#/components/schemas/CollectionQuality"
+        ratePerKg:
+          type: number
+        finalAmount:
+          type: number
+        notes:
+          type: ["string", "null"]
+        collectorName:
+          type: ["string", "null"]
+        verifiedAt:
+          type: string
+          format: date-time
+      required: [actualWeightKg, quality, ratePerKg, finalAmount, notes, collectorName, verifiedAt]
+    Receipt:
+      type: object
+      properties:
+        id:
+          type: string
+        receiptNumber:
+          type: string
+        pickupRequestId:
+          type: string
+        userName:
+          type: string
+        userEmail:
+          type: string
+          format: email
+        category:
+          $ref: "#/components/schemas/WasteCategory"
+        estimatedQuantityKg:
+          type: number
+        estimatedRatePerKg:
+          type: number
+        estimatedValue:
+          type: number
+        actualWeightKg:
+          type: number
+        finalRatePerKg:
+          type: number
+        finalAmount:
+          type: number
+        collectionDate:
+          type: string
+          format: date-time
+        verificationDate:
+          type: string
+          format: date-time
+        paymentStatus:
+          type: string
+          enum: [pending]
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, receiptNumber, pickupRequestId, userName, userEmail, category, estimatedQuantityKg, estimatedRatePerKg, estimatedValue, actualWeightKg, finalRatePerKg, finalAmount, collectionDate, verificationDate, paymentStatus, createdAt]
+    VerificationResult:
+      type: object
+      properties:
+        request:
+          $ref: "#/components/schemas/PickupRequest"
+        receipt:
+          $ref: "#/components/schemas/Receipt"
+        batch:
+          $ref: "#/components/schemas/InventoryBatch"
+      required: [request, receipt, batch]
+    InventoryProcessingStatus:
+      type: string
+      enum: [collected, sorted, stored, sent_for_processing, processed]
+    InventoryBatch:
+      type: object
+      properties:
+        id:
+          type: string
+        batchCode:
+          type: string
+        category:
+          $ref: "#/components/schemas/WasteCategory"
+        verifiedQuantityKg:
+          type: number
+        availableQuantityKg:
+          type: number
+        reservedQuantityKg:
+          type: number
+        quality:
+          $ref: "#/components/schemas/CollectionQuality"
+        pickupRequestId:
+          type: string
+        collectionDate:
+          type: string
+          format: date-time
+        processingStatus:
+          $ref: "#/components/schemas/InventoryProcessingStatus"
+        storageLocation:
+          type: ["string", "null"]
+        qrToken:
+          type: string
+        qrUrl:
+          type: string
+        statusHistory:
+          type: array
+          items:
+            $ref: "#/components/schemas/InventoryHistoryEntry"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required: [id, batchCode, category, verifiedQuantityKg, availableQuantityKg, reservedQuantityKg, quality, pickupRequestId, collectionDate, processingStatus, storageLocation, qrToken, qrUrl, statusHistory, createdAt, updatedAt]
+    InventoryHistoryEntry:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/InventoryProcessingStatus"
+        actorName:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+      required: [status, actorName, createdAt]
+    InventoryProcessingInput:
+      type: object
+      properties:
+        processingStatus:
+          $ref: "#/components/schemas/InventoryProcessingStatus"
+        storageLocation:
+          type: ["string", "null"]
+          maxLength: 300
+      required: [processingStatus]
 

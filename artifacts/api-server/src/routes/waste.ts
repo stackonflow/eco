@@ -53,7 +53,24 @@ type UserSummary = {
   toString(): string;
 };
 
-type PickupRequestRecord = {
+type StatusHistoryEntry = {
+  status: string;
+  note?: string | null;
+  actorName?: string | null;
+  createdAt: Date;
+};
+
+type VerificationRecord = {
+  actualWeightKg: number;
+  quality: string;
+  ratePerKg: number;
+  finalAmount: number;
+  notes?: string | null;
+  collectorName?: string | null;
+  verifiedAt: Date;
+};
+
+export type PickupRequestRecord = {
   _id: { toString(): string };
   user: UserSummary;
   category: string;
@@ -64,17 +81,28 @@ type PickupRequestRecord = {
   ratePerKg: number;
   estimatedValue: number;
   status: string;
+  assignedCollector?: UserSummary | null;
+  scheduledAt?: Date | null;
+  statusHistory?: StatusHistoryEntry[];
+  verification?: VerificationRecord | null;
   createdAt: Date;
   updatedAt: Date;
 };
 
-function toPickupRequestResponse(request: PickupRequestRecord) {
+export function toPickupRequestResponse(request: PickupRequestRecord) {
   const maybePopulated = request.user as UserSummary;
   const populated =
     typeof maybePopulated === "object" &&
     maybePopulated !== null &&
     typeof maybePopulated.name === "string"
       ? maybePopulated
+      : undefined;
+  const maybeCollector = request.assignedCollector;
+  const populatedCollector =
+    typeof maybeCollector === "object" &&
+    maybeCollector !== null &&
+    typeof maybeCollector.name === "string"
+      ? maybeCollector
       : undefined;
   return {
     id: request._id.toString(),
@@ -89,6 +117,31 @@ function toPickupRequestResponse(request: PickupRequestRecord) {
     ratePerKg: request.ratePerKg,
     estimatedValue: request.estimatedValue,
     status: request.status,
+    assignedCollector: populatedCollector
+      ? {
+          id: populatedCollector._id?.toString() ?? maybeCollector?.toString() ?? "",
+          name: populatedCollector.name ?? "",
+          email: populatedCollector.email ?? "",
+        }
+      : null,
+    scheduledAt: request.scheduledAt ?? null,
+    statusHistory: (request.statusHistory ?? []).map((entry) => ({
+      status: entry.status,
+      note: entry.note ?? null,
+      actorName: entry.actorName ?? null,
+      createdAt: entry.createdAt,
+    })),
+    verification: request.verification
+      ? {
+          actualWeightKg: request.verification.actualWeightKg,
+          quality: request.verification.quality,
+          ratePerKg: request.verification.ratePerKg,
+          finalAmount: request.verification.finalAmount,
+          notes: request.verification.notes ?? null,
+          collectorName: request.verification.collectorName ?? null,
+          verifiedAt: request.verification.verifiedAt,
+        }
+      : null,
     createdAt: request.createdAt,
     updatedAt: request.updatedAt,
   };
@@ -139,6 +192,9 @@ router.post("/waste-requests", requireAuth, async (req, res): Promise<void> => {
     ratePerKg: rate.ratePerKg,
     estimatedValue,
     status: "pending",
+    statusHistory: [
+      { status: "pending", note: "Request submitted", actorName: null, createdAt: new Date() },
+    ],
   });
 
   const payload = toPickupRequestResponse(
@@ -149,6 +205,7 @@ router.post("/waste-requests", requireAuth, async (req, res): Promise<void> => {
 
 router.get("/waste-requests", requireAuth, async (_req, res): Promise<void> => {
   const requests = await PickupRequest.find({ user: res.locals.userId })
+    .populate("assignedCollector", "name email")
     .sort({ createdAt: -1 })
     .lean();
   const payload = requests.map((request) =>
@@ -167,7 +224,9 @@ router.get(
       return;
     }
 
-    const request = await PickupRequest.findById(params.data.requestId).lean();
+    const request = await PickupRequest.findById(params.data.requestId)
+      .populate("assignedCollector", "name email")
+      .lean();
     if (!request) {
       res.status(404).json({ error: "Pickup request not found." });
       return;
@@ -280,6 +339,7 @@ router.get(
     const requests = await PickupRequest.find()
       .sort({ createdAt: -1 })
       .populate("user", "name email")
+      .populate("assignedCollector", "name email")
       .lean();
     const payload = requests.map((request) =>
       toPickupRequestResponse(request as unknown as PickupRequestRecord),
@@ -302,13 +362,48 @@ router.patch(
       res.status(400).json({ error: issueMessage(parsed.error) });
       return;
     }
-    const request = await PickupRequest.findByIdAndUpdate(
-      params.data.requestId,
-      { $set: { status: parsed.data.status } },
-      { new: true, runValidators: true },
-    ).populate("user", "name email");
-    if (!request) {
+    const current = await PickupRequest.findById(params.data.requestId);
+    if (!current) {
       res.status(404).json({ error: "Pickup request not found." });
+      return;
+    }
+    const allowedTransitions: Record<string, string[]> = {
+      pending: ["accepted", "cancelled", "rejected"],
+      accepted: ["cancelled", "rejected"],
+      scheduled: ["cancelled", "rejected"],
+      collected: [],
+      verified: ["completed"],
+      completed: [],
+      cancelled: [],
+      rejected: [],
+    };
+    const nextStatus = parsed.data.status;
+    if (!(allowedTransitions[current.status] ?? []).includes(nextStatus)) {
+      res.status(409).json({
+        error: `A pickup cannot move from ${current.status} to ${nextStatus}. Use the assignment, scheduling, or collection workflow for that step.`,
+      });
+      return;
+    }
+    const actor = await User.findById(res.locals.userId).select("name").lean();
+    const request = await PickupRequest.findOneAndUpdate(
+      { _id: current._id, status: current.status },
+      {
+        $set: { status: nextStatus },
+        $push: {
+          statusHistory: {
+            status: nextStatus,
+            note: null,
+            actorName: actor?.name ?? null,
+            createdAt: new Date(),
+          },
+        },
+      },
+      { new: true, runValidators: true },
+    )
+      .populate("user", "name email")
+      .populate("assignedCollector", "name email");
+    if (!request) {
+      res.status(409).json({ error: "The pickup changed while you were updating it. Refresh and try again." });
       return;
     }
     res.json(

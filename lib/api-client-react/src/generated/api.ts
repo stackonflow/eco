@@ -21,15 +21,24 @@ import type {
 
 import type {
   AuthResponse,
+  CollectionVerificationInput,
+  CollectorAssignmentInput,
+  CollectorStatusInput,
+  CollectorSummary,
   ErrorResponse,
   HealthStatus,
+  InventoryBatch,
+  InventoryProcessingInput,
   LoginInput,
   LogoutResponse,
   PickupRequest,
   PickupRequestInput,
   PickupRequestStatusUpdate,
+  PickupScheduleInput,
   ProfileUpdateInput,
+  Receipt,
   RegisterInput,
+  VerificationResult,
   WasteRate,
   WasteRateInput,
   WasteRateUpdate
@@ -1292,5 +1301,1066 @@ export const useUpdateWasteRequestStatus = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getUpdateWasteRequestStatusMutationOptions(options));
+    }
+
+export const getListCollectorsUrl = () => {
+
+
+
+
+  return `/api/admin/collectors`
+}
+
+/**
+ * @summary List authorized collector accounts for assignment
+ */
+export const listCollectors = async ( options?: Parameters<typeof customFetch>[1]): Promise<CollectorSummary[]> => {
+
+  return customFetch<CollectorSummary[]>(getListCollectorsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListCollectorsQueryKey = () => {
+    return [
+    `/api/admin/collectors`
+    ] as const;
+    }
+
+
+export const getListCollectorsQueryOptions = <TData = Awaited<ReturnType<typeof listCollectors>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listCollectors>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListCollectorsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listCollectors>>> = ({ signal }) => listCollectors({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listCollectors>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListCollectorsQueryResult = NonNullable<Awaited<ReturnType<typeof listCollectors>>>
+export type ListCollectorsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List authorized collector accounts for assignment
+ */
+
+export function useListCollectors<TData = Awaited<ReturnType<typeof listCollectors>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listCollectors>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListCollectorsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getAssignCollectorUrl = (requestId: string,) => {
+
+
+
+
+  return `/api/admin/waste-requests/${requestId}/assignment`
+}
+
+/**
+ * @summary Assign an authorized collector to a pickup request
+ */
+export const assignCollector = async (requestId: string,
+    collectorAssignmentInput: CollectorAssignmentInput, options?: Parameters<typeof customFetch>[1]): Promise<PickupRequest> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<PickupRequest>(getAssignCollectorUrl(requestId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(collectorAssignmentInput)
+  }
+);}
+
+
+
+
+
+export const getAssignCollectorMutationKey = () => ['assignCollector'] as const;
+
+export const getAssignCollectorMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof assignCollector>>, TError,AssignCollectorMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof assignCollector>>, TError,AssignCollectorMutationVariables, TContext> => {
+
+const mutationKey = getAssignCollectorMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof assignCollector>>, AssignCollectorMutationVariables> = (props) => {
+          const {requestId,data} = props ?? {};
+
+          return  assignCollector(requestId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AssignCollectorMutationResult = NonNullable<Awaited<ReturnType<typeof assignCollector>>>
+    export type AssignCollectorMutationBody = BodyType<CollectorAssignmentInput>
+    export type AssignCollectorMutationError = ErrorType<unknown>
+    export type AssignCollectorMutationVariables = {requestId: string;data: BodyType<CollectorAssignmentInput>}
+
+    /**
+ * @summary Assign an authorized collector to a pickup request
+ */
+export const useAssignCollector = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof assignCollector>>, TError,AssignCollectorMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof assignCollector>>,
+        TError,
+        AssignCollectorMutationVariables,
+        TContext
+      > => {
+      return useMutation(getAssignCollectorMutationOptions(options));
+    }
+
+export const getSchedulePickupUrl = (requestId: string,) => {
+
+
+
+
+  return `/api/admin/waste-requests/${requestId}/schedule`
+}
+
+/**
+ * @summary Schedule or reschedule an assigned pickup
+ */
+export const schedulePickup = async (requestId: string,
+    pickupScheduleInput: PickupScheduleInput, options?: Parameters<typeof customFetch>[1]): Promise<PickupRequest> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<PickupRequest>(getSchedulePickupUrl(requestId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(pickupScheduleInput)
+  }
+);}
+
+
+
+
+
+export const getSchedulePickupMutationKey = () => ['schedulePickup'] as const;
+
+export const getSchedulePickupMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof schedulePickup>>, TError,SchedulePickupMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof schedulePickup>>, TError,SchedulePickupMutationVariables, TContext> => {
+
+const mutationKey = getSchedulePickupMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof schedulePickup>>, SchedulePickupMutationVariables> = (props) => {
+          const {requestId,data} = props ?? {};
+
+          return  schedulePickup(requestId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SchedulePickupMutationResult = NonNullable<Awaited<ReturnType<typeof schedulePickup>>>
+    export type SchedulePickupMutationBody = BodyType<PickupScheduleInput>
+    export type SchedulePickupMutationError = ErrorType<unknown>
+    export type SchedulePickupMutationVariables = {requestId: string;data: BodyType<PickupScheduleInput>}
+
+    /**
+ * @summary Schedule or reschedule an assigned pickup
+ */
+export const useSchedulePickup = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof schedulePickup>>, TError,SchedulePickupMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof schedulePickup>>,
+        TError,
+        SchedulePickupMutationVariables,
+        TContext
+      > => {
+      return useMutation(getSchedulePickupMutationOptions(options));
+    }
+
+export const getListCollectorAssignmentsUrl = () => {
+
+
+
+
+  return `/api/collector/assignments`
+}
+
+/**
+ * @summary List pickup requests assigned to the signed-in collector
+ */
+export const listCollectorAssignments = async ( options?: Parameters<typeof customFetch>[1]): Promise<PickupRequest[]> => {
+
+  return customFetch<PickupRequest[]>(getListCollectorAssignmentsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListCollectorAssignmentsQueryKey = () => {
+    return [
+    `/api/collector/assignments`
+    ] as const;
+    }
+
+
+export const getListCollectorAssignmentsQueryOptions = <TData = Awaited<ReturnType<typeof listCollectorAssignments>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listCollectorAssignments>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListCollectorAssignmentsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listCollectorAssignments>>> = ({ signal }) => listCollectorAssignments({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listCollectorAssignments>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListCollectorAssignmentsQueryResult = NonNullable<Awaited<ReturnType<typeof listCollectorAssignments>>>
+export type ListCollectorAssignmentsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List pickup requests assigned to the signed-in collector
+ */
+
+export function useListCollectorAssignments<TData = Awaited<ReturnType<typeof listCollectorAssignments>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listCollectorAssignments>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListCollectorAssignmentsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getUpdateCollectorPickupStatusUrl = (requestId: string,) => {
+
+
+
+
+  return `/api/collector/waste-requests/${requestId}/status`
+}
+
+/**
+ * @summary Record collection of a pickup assigned to the collector
+ */
+export const updateCollectorPickupStatus = async (requestId: string,
+    collectorStatusInput: CollectorStatusInput, options?: Parameters<typeof customFetch>[1]): Promise<PickupRequest> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<PickupRequest>(getUpdateCollectorPickupStatusUrl(requestId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(collectorStatusInput)
+  }
+);}
+
+
+
+
+
+export const getUpdateCollectorPickupStatusMutationKey = () => ['updateCollectorPickupStatus'] as const;
+
+export const getUpdateCollectorPickupStatusMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCollectorPickupStatus>>, TError,UpdateCollectorPickupStatusMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateCollectorPickupStatus>>, TError,UpdateCollectorPickupStatusMutationVariables, TContext> => {
+
+const mutationKey = getUpdateCollectorPickupStatusMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateCollectorPickupStatus>>, UpdateCollectorPickupStatusMutationVariables> = (props) => {
+          const {requestId,data} = props ?? {};
+
+          return  updateCollectorPickupStatus(requestId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateCollectorPickupStatusMutationResult = NonNullable<Awaited<ReturnType<typeof updateCollectorPickupStatus>>>
+    export type UpdateCollectorPickupStatusMutationBody = BodyType<CollectorStatusInput>
+    export type UpdateCollectorPickupStatusMutationError = ErrorType<unknown>
+    export type UpdateCollectorPickupStatusMutationVariables = {requestId: string;data: BodyType<CollectorStatusInput>}
+
+    /**
+ * @summary Record collection of a pickup assigned to the collector
+ */
+export const useUpdateCollectorPickupStatus = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCollectorPickupStatus>>, TError,UpdateCollectorPickupStatusMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateCollectorPickupStatus>>,
+        TError,
+        UpdateCollectorPickupStatusMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateCollectorPickupStatusMutationOptions(options));
+    }
+
+export const getVerifyCollectionUrl = (requestId: string,) => {
+
+
+
+
+  return `/api/collector/waste-requests/${requestId}/verification`
+}
+
+/**
+ * @summary Record verified weight and quality and create the receipt and inventory batch
+ */
+export const verifyCollection = async (requestId: string,
+    collectionVerificationInput: CollectionVerificationInput, options?: Parameters<typeof customFetch>[1]): Promise<VerificationResult> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<VerificationResult>(getVerifyCollectionUrl(requestId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(collectionVerificationInput)
+  }
+);}
+
+
+
+
+
+export const getVerifyCollectionMutationKey = () => ['verifyCollection'] as const;
+
+export const getVerifyCollectionMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyCollection>>, TError,VerifyCollectionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof verifyCollection>>, TError,VerifyCollectionMutationVariables, TContext> => {
+
+const mutationKey = getVerifyCollectionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof verifyCollection>>, VerifyCollectionMutationVariables> = (props) => {
+          const {requestId,data} = props ?? {};
+
+          return  verifyCollection(requestId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type VerifyCollectionMutationResult = NonNullable<Awaited<ReturnType<typeof verifyCollection>>>
+    export type VerifyCollectionMutationBody = BodyType<CollectionVerificationInput>
+    export type VerifyCollectionMutationError = ErrorType<unknown>
+    export type VerifyCollectionMutationVariables = {requestId: string;data: BodyType<CollectionVerificationInput>}
+
+    /**
+ * @summary Record verified weight and quality and create the receipt and inventory batch
+ */
+export const useVerifyCollection = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyCollection>>, TError,VerifyCollectionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof verifyCollection>>,
+        TError,
+        VerifyCollectionMutationVariables,
+        TContext
+      > => {
+      return useMutation(getVerifyCollectionMutationOptions(options));
+    }
+
+export const getListMyReceiptsUrl = () => {
+
+
+
+
+  return `/api/receipts`
+}
+
+/**
+ * @summary List digital receipts belonging to the signed-in user
+ */
+export const listMyReceipts = async ( options?: Parameters<typeof customFetch>[1]): Promise<Receipt[]> => {
+
+  return customFetch<Receipt[]>(getListMyReceiptsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListMyReceiptsQueryKey = () => {
+    return [
+    `/api/receipts`
+    ] as const;
+    }
+
+
+export const getListMyReceiptsQueryOptions = <TData = Awaited<ReturnType<typeof listMyReceipts>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyReceipts>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListMyReceiptsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyReceipts>>> = ({ signal }) => listMyReceipts({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listMyReceipts>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListMyReceiptsQueryResult = NonNullable<Awaited<ReturnType<typeof listMyReceipts>>>
+export type ListMyReceiptsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List digital receipts belonging to the signed-in user
+ */
+
+export function useListMyReceipts<TData = Awaited<ReturnType<typeof listMyReceipts>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyReceipts>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListMyReceiptsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetReceiptUrl = (receiptId: string,) => {
+
+
+
+
+  return `/api/receipts/${receiptId}`
+}
+
+/**
+ * @summary View an owned receipt or one accessible to an administrator
+ */
+export const getReceipt = async (receiptId: string, options?: Parameters<typeof customFetch>[1]): Promise<Receipt> => {
+
+  return customFetch<Receipt>(getGetReceiptUrl(receiptId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetReceiptQueryKey = (receiptId: string,) => {
+    return [
+    `/api/receipts/${receiptId}`
+    ] as const;
+    }
+
+
+export const getGetReceiptQueryOptions = <TData = Awaited<ReturnType<typeof getReceipt>>, TError = ErrorType<unknown>>(receiptId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getReceipt>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetReceiptQueryKey(receiptId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getReceipt>>> = ({ signal }) => getReceipt(receiptId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: receiptId !== null && receiptId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getReceipt>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetReceiptQueryResult = NonNullable<Awaited<ReturnType<typeof getReceipt>>>
+export type GetReceiptQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary View an owned receipt or one accessible to an administrator
+ */
+
+export function useGetReceipt<TData = Awaited<ReturnType<typeof getReceipt>>, TError = ErrorType<unknown>>(
+ receiptId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getReceipt>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetReceiptQueryOptions(receiptId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getListAllReceiptsUrl = () => {
+
+
+
+
+  return `/api/admin/receipts`
+}
+
+/**
+ * @summary List digital receipts for operational use
+ */
+export const listAllReceipts = async ( options?: Parameters<typeof customFetch>[1]): Promise<Receipt[]> => {
+
+  return customFetch<Receipt[]>(getListAllReceiptsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListAllReceiptsQueryKey = () => {
+    return [
+    `/api/admin/receipts`
+    ] as const;
+    }
+
+
+export const getListAllReceiptsQueryOptions = <TData = Awaited<ReturnType<typeof listAllReceipts>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAllReceipts>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListAllReceiptsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listAllReceipts>>> = ({ signal }) => listAllReceipts({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listAllReceipts>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListAllReceiptsQueryResult = NonNullable<Awaited<ReturnType<typeof listAllReceipts>>>
+export type ListAllReceiptsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List digital receipts for operational use
+ */
+
+export function useListAllReceipts<TData = Awaited<ReturnType<typeof listAllReceipts>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAllReceipts>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListAllReceiptsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getListInventoryBatchesUrl = () => {
+
+
+
+
+  return `/api/admin/inventory`
+}
+
+/**
+ * @summary List verified material inventory batches
+ */
+export const listInventoryBatches = async ( options?: Parameters<typeof customFetch>[1]): Promise<InventoryBatch[]> => {
+
+  return customFetch<InventoryBatch[]>(getListInventoryBatchesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListInventoryBatchesQueryKey = () => {
+    return [
+    `/api/admin/inventory`
+    ] as const;
+    }
+
+
+export const getListInventoryBatchesQueryOptions = <TData = Awaited<ReturnType<typeof listInventoryBatches>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listInventoryBatches>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListInventoryBatchesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listInventoryBatches>>> = ({ signal }) => listInventoryBatches({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listInventoryBatches>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListInventoryBatchesQueryResult = NonNullable<Awaited<ReturnType<typeof listInventoryBatches>>>
+export type ListInventoryBatchesQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List verified material inventory batches
+ */
+
+export function useListInventoryBatches<TData = Awaited<ReturnType<typeof listInventoryBatches>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listInventoryBatches>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListInventoryBatchesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetInventoryBatchUrl = (batchId: string,) => {
+
+
+
+
+  return `/api/admin/inventory/${batchId}`
+}
+
+/**
+ * @summary Retrieve an inventory batch
+ */
+export const getInventoryBatch = async (batchId: string, options?: Parameters<typeof customFetch>[1]): Promise<InventoryBatch> => {
+
+  return customFetch<InventoryBatch>(getGetInventoryBatchUrl(batchId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetInventoryBatchQueryKey = (batchId: string,) => {
+    return [
+    `/api/admin/inventory/${batchId}`
+    ] as const;
+    }
+
+
+export const getGetInventoryBatchQueryOptions = <TData = Awaited<ReturnType<typeof getInventoryBatch>>, TError = ErrorType<unknown>>(batchId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInventoryBatch>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetInventoryBatchQueryKey(batchId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getInventoryBatch>>> = ({ signal }) => getInventoryBatch(batchId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: batchId !== null && batchId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getInventoryBatch>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetInventoryBatchQueryResult = NonNullable<Awaited<ReturnType<typeof getInventoryBatch>>>
+export type GetInventoryBatchQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Retrieve an inventory batch
+ */
+
+export function useGetInventoryBatch<TData = Awaited<ReturnType<typeof getInventoryBatch>>, TError = ErrorType<unknown>>(
+ batchId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInventoryBatch>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetInventoryBatchQueryOptions(batchId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetInventoryBatchByQrUrl = (token: string,) => {
+
+
+
+
+  return `/api/admin/inventory/qr/${token}`
+}
+
+/**
+ * @summary Resolve an authorized inventory QR code
+ */
+export const getInventoryBatchByQr = async (token: string, options?: Parameters<typeof customFetch>[1]): Promise<InventoryBatch> => {
+
+  return customFetch<InventoryBatch>(getGetInventoryBatchByQrUrl(token),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetInventoryBatchByQrQueryKey = (token: string,) => {
+    return [
+    `/api/admin/inventory/qr/${token}`
+    ] as const;
+    }
+
+
+export const getGetInventoryBatchByQrQueryOptions = <TData = Awaited<ReturnType<typeof getInventoryBatchByQr>>, TError = ErrorType<unknown>>(token: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInventoryBatchByQr>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetInventoryBatchByQrQueryKey(token);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getInventoryBatchByQr>>> = ({ signal }) => getInventoryBatchByQr(token, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: token !== null && token !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getInventoryBatchByQr>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetInventoryBatchByQrQueryResult = NonNullable<Awaited<ReturnType<typeof getInventoryBatchByQr>>>
+export type GetInventoryBatchByQrQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Resolve an authorized inventory QR code
+ */
+
+export function useGetInventoryBatchByQr<TData = Awaited<ReturnType<typeof getInventoryBatchByQr>>, TError = ErrorType<unknown>>(
+ token: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInventoryBatchByQr>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetInventoryBatchByQrQueryOptions(token,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getUpdateInventoryProcessingUrl = (batchId: string,) => {
+
+
+
+
+  return `/api/admin/inventory/${batchId}/processing`
+}
+
+/**
+ * @summary Update the processing status or storage location of a batch
+ */
+export const updateInventoryProcessing = async (batchId: string,
+    inventoryProcessingInput: InventoryProcessingInput, options?: Parameters<typeof customFetch>[1]): Promise<InventoryBatch> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<InventoryBatch>(getUpdateInventoryProcessingUrl(batchId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(inventoryProcessingInput)
+  }
+);}
+
+
+
+
+
+export const getUpdateInventoryProcessingMutationKey = () => ['updateInventoryProcessing'] as const;
+
+export const getUpdateInventoryProcessingMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateInventoryProcessing>>, TError,UpdateInventoryProcessingMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateInventoryProcessing>>, TError,UpdateInventoryProcessingMutationVariables, TContext> => {
+
+const mutationKey = getUpdateInventoryProcessingMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateInventoryProcessing>>, UpdateInventoryProcessingMutationVariables> = (props) => {
+          const {batchId,data} = props ?? {};
+
+          return  updateInventoryProcessing(batchId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateInventoryProcessingMutationResult = NonNullable<Awaited<ReturnType<typeof updateInventoryProcessing>>>
+    export type UpdateInventoryProcessingMutationBody = BodyType<InventoryProcessingInput>
+    export type UpdateInventoryProcessingMutationError = ErrorType<unknown>
+    export type UpdateInventoryProcessingMutationVariables = {batchId: string;data: BodyType<InventoryProcessingInput>}
+
+    /**
+ * @summary Update the processing status or storage location of a batch
+ */
+export const useUpdateInventoryProcessing = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateInventoryProcessing>>, TError,UpdateInventoryProcessingMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateInventoryProcessing>>,
+        TError,
+        UpdateInventoryProcessingMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateInventoryProcessingMutationOptions(options));
     }
 
